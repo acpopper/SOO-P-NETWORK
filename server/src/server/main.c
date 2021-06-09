@@ -4,7 +4,6 @@
 #include "../coms/comunication.h"
 #include "../coms/conection.h"
 #include "../entities/chars.h"
-#include "../entities/monsters.h"
 
 char * revert(char * message){
   //Se invierte el mensaje
@@ -21,12 +20,20 @@ char * revert(char * message){
 }
 
 int main(int argc, char *argv[]){
-  player** players = malloc(sizeof(player*) * 4);
+  entity** players = malloc(sizeof(player*) * 4);
   char** actions = malloc(sizeof(char*) * 5);
-  player* p1 = new_player("juan", false, "Cazador");
-  player* p2 = new_player("fede", false, "Cazador");
-  player* p3 = new_player("fco", false, "Cazador");
-  player* p4 = new_player("pedro", true, "Cazador");
+  char* action_p1 = malloc(sizeof(char*));
+  char* action_p2 = malloc(sizeof(char*));
+  char* action_p3 = malloc(sizeof(char*));
+  char* action_p4 = malloc(sizeof(char*));
+  actions[0] = action_p1;
+  actions[1] = action_p2;
+  actions[2] = action_p3;
+  actions[3] = action_p4;
+  entity* p1 = new_entity("juan", false, "Cazador", true);
+  entity* p2 = new_entity("fede", false, "Médico", true);
+  entity* p3 = new_entity("fco", false, "Hacker", true);
+  entity* p4 = new_entity("pedro", true, "Cazador", true);
   int* rondas = malloc(sizeof(int));
   *rondas = 8;
   *rondas += 1;
@@ -35,32 +42,36 @@ int main(int argc, char *argv[]){
   players[2] = p3;
   players[3] = p4;
   printf("%d\n", p1->vida);
-  monster* m1 = new_monster("Ruzalos");
+  entity* m1 = new_entity("", false, "Ruiz, el Gemelo Malvado del Profesor Ruz", false);
   printf("%d\n", m1->vida);
-  player* p0 = new_player("prer", true, "Médico");
-  if (use_ability(p3, m1, p0, "Distraer", players, 1))
+  // printf("%d\n", m1->vida);
+  // player* p0 = new_player("prer", true, "Médico");
+  if (use_ability(p1, m1, "Estocada", players, 1))
   {
     printf("%d\n", m1->vida);
     printf("%d\n", players[0]->vida);
   }
-  if (monster_use_ability(m1, players, 4, rondas))
+  if (entity_use_ability(m1, players, 4, rondas))
   {
     for (int i = 0; i < 4; i++)
     {
       printf("Vida jugador %d: %d/%d\n", i, players[i]->vida, players[i]->vida_max);
-      printf("%d\n", players[i]->last_used_distraer);
+      // printf("%d\n", players[i]->jugador->last_used_distraer);
     }
 
   }
-  printf("%d\n", *rondas);
+  // printf("%d\n", *rondas);
   
   free(rondas);
-  free(p1);
-  free(p2);
-  free(p3);
-  free(p4);
-  free(m1);
-  free(p0);
+  free_entity(p1);
+  free_entity(p2);
+  free_entity(p3);
+  free_entity(p4);
+  free_entity(m1);
+  free(action_p1);
+  free(action_p2);
+  free(action_p3);
+  free(action_p4);
   free(players);
   free(actions);
 

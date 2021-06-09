@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "conection.h": "c"
+        "conection.h": "c",
+        "type_traits": "c"
     }
 }
