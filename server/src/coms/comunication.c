@@ -24,7 +24,7 @@ char * server_receive_payload(int client_socket){
 
 void server_send_message(int client_socket, int pkg_id, char * message){
   int payloadSize = strlen(message) + 1;
-  //printf("payload size: %d\n", payloadSize);
+  printf("payload size: %d\n", payloadSize);
   // Se arma el paquete
   char msg[1+1+payloadSize];
   msg[0] = pkg_id;

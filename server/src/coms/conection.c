@@ -38,14 +38,18 @@ PlayersInfo * prepare_sockets_and_get_clients(char * IP, int port){
   // Se definen las estructuras para almacenar info sobre los sockets de los clientes
   struct sockaddr_in client1_addr;
   struct sockaddr_in client2_addr;
+  struct sockaddr_in client3_addr;
+  struct sockaddr_in client4_addr;
   socklen_t addr_size = sizeof(client1_addr);
 
   // Se inicializa una estructura propia para guardar los n°s de sockets de los clientes.
   PlayersInfo * sockets_clients = malloc(sizeof(PlayersInfo));
 
-  // Se aceptan a los primeros 2 clientes que lleguen. "accept" retorna el n° de otro socket asignado para la comunicación
+  // Se aceptan a los primeros 4 clientes que lleguen. "accept" retorna el n° de otro socket asignado para la comunicación
   sockets_clients->socket_c1 = accept(server_socket, (struct sockaddr *)&client1_addr, &addr_size);
   sockets_clients->socket_c2 = accept(server_socket, (struct sockaddr *)&client2_addr, &addr_size);
+  sockets_clients->socket_c3 = accept(server_socket, (struct sockaddr *)&client3_addr, &addr_size);
+  sockets_clients->socket_c4 = accept(server_socket, (struct sockaddr *)&client4_addr, &addr_size);
 
   return sockets_clients;
 }
