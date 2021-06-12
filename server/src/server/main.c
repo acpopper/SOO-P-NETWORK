@@ -4,65 +4,32 @@
 #include "../coms/comunication.h"
 #include "../coms/conection.h"
 
+int max_connections = 4;
+void * handle_connection(void *p_client_socket){
+  int client_socket = *((int*)p_client_socket);
+  free(p_client_socket);
 
-
-char * revert(char * message){
-  //Se invierte el mensaje
-
-  int len = strlen(message) + 1;
-  char * response = malloc(len);
-
-  for (int i = 0; i < len-1; i++)
-  {
-    response[i] = message[len-2-i];
-  }
-  response[len-1] = '\0';
-  return response;
 }
 
 int main(int argc, char *argv[]){
-  // Se define una IP y un puerto
+  int actual_connections = 0;
   char * IP = argv[2];
   int PORT = atoi(argv[4]);
-  // // Se crea el servidor y se obtienen los sockets de los clientes.
-  PlayersInfo * players_info = prepare_sockets_and_get_clients(IP, PORT);
-  // // Le enviamos al primer cliente un mensaje de bienvenida
-  char * welcome = "Bienvenido Cliente 1!!";
-  printf("%i\n", players_info->socket_c2);
-  //server_send_message(players_info->socket_c1, 0, welcome);
-
-  // // Guardaremos los sockets en un arreglo e iremos alternando a quién escuchar.
-  //int sockets_array[4] = {players_info->socket_c1, players_info->socket_c2,players_info->socket_c3,players_info->socket_c4};
-  //int my_attention = 0;
+  int server_socket = setup_server(IP, PORT);
   while (1){
-    //for(int i = 0; i<4; i++){
-      //server_send_message(sockets_array[i], 0,"¡Bienvenido a Monster Hunter:Ruz!");
-    //}
-  //   // Se obtiene el paquete del cliente 1
-  //   int msg_code = server_receive_id(sockets_array[my_attention]);
+    if (actual_connections<max_connections){
+      printf("Esperando conexiones...\n");
+      int client_socket = accept_new_connection(server_socket);
+      actual_connections++;
+      printf("Nuevo cliente conectado\n");
+      pthread_t client;
+      int *pclient = malloc(sizeof(int));
+      *pclient = client_socket;
+      pthread_create(&client, NULL, handle_connection,pclient);
+    }
 
-  //   if (msg_code == 1) //El cliente me envió un mensaje a mi (servidor)
-  //   {
-  //     char * client_message = server_receive_payload(sockets_array[my_attention]);
-  //     printf("El cliente %d dice: %s\n", my_attention+1, client_message);
-
-  //     // Le enviaremos el mismo mensaje invertido jeje
-  //     char * response = revert(client_message);
-
-  //     // Le enviamos la respuesta
-  //     server_send_message(sockets_array[my_attention], 1, response);
-  //   }
-  //   else if (msg_code == 2){ //El cliente le envía un mensaje al otro cliente
-  //     char * client_message = server_receive_payload(sockets_array[my_attention]);
-  //     printf("Servidor traspasando desde %d a %d el mensaje: %s\n", my_attention+1, ((my_attention+1)%2)+1, client_message);
-
-  //     // Mi atención cambia al otro socket
-  //     my_attention = (my_attention + 1) % 2;
-
-  //     server_send_message(sockets_array[my_attention], 2, client_message);
-  //   }
-  //   printf("------------------\n");
+  
   }
-
   return 0;
 }
+

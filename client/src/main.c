@@ -24,7 +24,10 @@ int main (int argc, char *argv[]){
 
   // Se prepara el socket
   int server_socket = prepare_socket(IP, PORT);
-
+  if(server_socket){
+    printf("hola\n");
+    
+  }
   // Se inicializa un loop para recibir todo tipo de paquetes y tomar una acción al respecto
   //while (1){
     //int msg_code = client_receive_id(server_socket);
