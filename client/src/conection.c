@@ -13,14 +13,8 @@ int prepare_socket(char * IP, int PORT){
   inet_aton(IP, &server_addr.sin_addr);
 
   // Se pide una conexión al servidor
-  int ret = connect(client_socket, (struct sockaddr*)&server_addr, sizeof(server_addr));
-  if (ret!= 0){
-    printf("Fallo conexión\n");
-    return -1;
-  }
-  else{
-    printf("Conexión establecida\n");
-    return client_socket;
-  }
+  int ret = connect(client_socket, (struct sockaddr*)&server_addr, sizeof(server_addr)); 
+  //falta revisar de que se rechace la conexion si es que hay 4 jugadores
+  return client_socket;
   
 }
