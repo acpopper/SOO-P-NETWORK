@@ -70,7 +70,7 @@ entity* new_entity(char* nombre, bool party_leader, char* type, bool is_player)
         new_entity->jugador->nombre = nombre;
         new_entity->jugador->party_leader = party_leader;
         new_entity->jugador->last_used_distraer = false;
-        new_entity->jugador->times_fb = 0;
+        new_entity->times_fb = 0;
     }
     else
     {
@@ -194,9 +194,13 @@ bool use_ability_medico(entity* user, entity* target, char* ability, entity** en
     }
 }
 
-
 bool use_curar(entity* user, entity* target)
 {
+    if (!user->is_player)
+    {
+        heal_entity(user, user, valor_curar_medic);
+        return true;
+    }
     printf("%s uso curar\n", user->jugador->nombre);
     heal_entity(user, target, valor_curar_medic);
     return true;
@@ -254,14 +258,14 @@ bool use_ddos(entity* user, entity* target)
 bool use_fb(entity* user, entity* target)
 {
     printf("%s uso fb\n", user->jugador->nombre);
-    if (user->jugador->times_fb < 3)
+    if (user->times_fb < 3)
     {
-        user->jugador->times_fb++;
+        user->times_fb++;
     }
     else
     {
         dmg_entity(user, target, dmg_fb_hacker);
-        user->jugador->times_fb = 0;
+        user->times_fb = 0;
     }
     return true;
 }
@@ -422,15 +426,16 @@ void dmg_entity(entity* attacker, entity* target, int dmg)
 void heal_entity(entity* user, entity* target, int amt)
 {
     int real_amt = amt * user->dmg_modifier;
-    printf("curo %d de vida\n", real_amt);
     if (target->alive)
     {
-        if (target->vida_max - target->vida < real_amt)
+        if (target->vida_max - target->vida > real_amt)
         {
+            printf("curo %d de vida\n", real_amt);
             target->vida += real_amt;
         }
         else
         {
+            printf("curo %d de vida\n", target->vida_max - target->vida);
             target->vida = target->vida_max;
         }
     }
