@@ -46,9 +46,10 @@ void catch_error_start_game(int server_socket){
   printf("Hay jugadores que aun no ingresan su nombre y/o clase...\n");
 
 }
-
 void start_game(int server_socket){
-  
+  char * message = client_receive_payload(server_socket);
+  printf("¡Que el juego comience! Su enemigo es: %s\n", message);
+  free(message);
 }
 
 

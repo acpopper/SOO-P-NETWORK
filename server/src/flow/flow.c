@@ -68,8 +68,12 @@ bool game(entity** players, int leader,int connections){
     if(connections==count_players_with_name){
         start = true;
         players[4] = new_monster(type);
-        //avisar a los jugadores que el juego comienza
         
+        for(int i=0; i<4;i++){
+            if(players[i]!=0){
+                server_send_message(players[i]->jugador->client_socket,5,players[4]->type);
+            }
+        }
 
     }  else{
         //error: no todos los jugadores han ingresado su nombre
