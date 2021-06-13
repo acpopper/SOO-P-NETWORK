@@ -26,7 +26,15 @@ void lobby(int server_socket){
 }
 
 void notification_leader(int server_socket){
+  char * message = client_receive_payload(server_socket);
+  printf("Ha ingresado un nuevo jugador:%s\n", message);
+  free(message);
   
+  //preguntar si quiere iniciar el juego 
+  //llegada de mensaje de error desde el servidor si es que falta alguien que guarde su nombre
+  //hacer que elija el enemigo
+  //enviar al servidor
+
 }
 
 

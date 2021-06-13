@@ -9,6 +9,7 @@
 int max_connections = 4;
 int actual_connections = 0; //size de entities
 entity** entities;
+bool start_game = false;
 
 void * handle_connection(void *p_client_socket){
   int client_socket = *((int*)p_client_socket);
@@ -20,7 +21,7 @@ void * handle_connection(void *p_client_socket){
       add_name(entities,client_socket);
     }
     else if(msg_code == 1){
-      add_type_and_notify_leader(entities, client_socket);
+      add_type(entities, client_socket);
     }
     else if(msg_code ==-1){
       //eliminar cliente del array
@@ -39,7 +40,7 @@ int main(int argc, char *argv[]){
   int server_socket = setup_server(IP, PORT);
   entities = calloc(5,sizeof(entity)); //son 5 porque el ultimo es el monster
   while (1){
-    if (actual_connections<max_connections){
+    if (actual_connections<max_connections && !start_game){
       printf("Esperando conexiones...\n");
       int client_socket = accept_new_connection(server_socket);
       for(int i=0; i<4; i++){

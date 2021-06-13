@@ -25,19 +25,34 @@ void add_type(entity** players, int client_socket){
     char *msg = server_receive_payload(client_socket);
     int type = atoi(msg);
     free(msg);
+    int leader = 0;
     for(int i =0; i<4; i++){
         if(players[i]!=0){
             if(players[i]->jugador->client_socket==client_socket){
                 type_entity_player(players[i], type);
             }
             if(players[i]->jugador->party_leader){
-                notify_leader(players[i]->jugador->client_socket,players);
+                leader= players[i]->jugador->client_socket;
             }
         }   
     }
+    notify_leader(leader,players, client_socket);
 
 }
-void notify_leader(int leader, entity** players){
+void notify_leader(int leader, entity** players, int new_player){
+    char* msg="";
+    for(int i=0; i<4; i++){
+        if(players[i]->jugador->client_socket==new_player){
+            msg=players[i]->jugador->nombre;
+            strcat(msg,"-");
+            strcat(msg,players[i]->type);
+            break;
+        }
+    }
+    server_send_message(leader,1,msg);
+}
+
+void start_game(){
     
 }
 
