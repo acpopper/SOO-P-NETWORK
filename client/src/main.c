@@ -30,7 +30,7 @@ int main (int argc, char *argv[]){
         //error: aun no se puede comenzar partida-> solo lo puede recibir el lider
       }
       else if(msg_code==5){
-        //comienza el juego
+        //comienza el juego-> notificacion para todos los jugadores- 
         start_game(server_socket);
       }
       

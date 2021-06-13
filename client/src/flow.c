@@ -50,6 +50,7 @@ void start_game(int server_socket){
   char * message = client_receive_payload(server_socket);
   printf("¡Que el juego comience! Su enemigo es: %s\n", message);
   free(message);
+  //crear una funcion que se llame cada vez que sea el turno del jugador
 }
 
 
