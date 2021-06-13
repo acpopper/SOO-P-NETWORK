@@ -10,3 +10,4 @@ void welcome_client(int client_socket);
 void add_name(entity** players, int client_socket);
 void add_type(entity** players, int client_socket);
 void notify_leader(int leader, entity** players, int new_player);
+bool game(entity** players, int leader,int connections);

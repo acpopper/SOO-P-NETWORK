@@ -41,7 +41,7 @@ typedef struct Entity
 
 
 
-entity* new_monster(char* type);
+entity* new_monster(int type);
 entity* new_entity(bool party_leader, int client_socket, bool is_player, char *name, char* type); //crear entity
 void name_entity_player(entity* player, char* name);
 void type_entity_player(entity* player, int type);

@@ -107,6 +107,39 @@ void type_entity_player(entity* player, int type){
     }
 }
 
+entity* new_monster(int type){
+     entity* new_entity = malloc(sizeof(entity));
+    new_entity->monstruo = malloc(sizeof(entity));
+    new_entity->jugador = malloc(sizeof(entity));
+    new_entity->is_player = false;
+    new_entity->jugador->nombre = type;
+    if (type==1){
+        new_entity->vida_max = 10000;
+        new_entity->type ="Great JagRuz";
+        new_entity->jugador->nombre = "Great JagRuz";
+    }
+       
+    else if (type== 2){
+        new_entity->vida_max = 20000;
+        new_entity->type = "Ruzalos";
+        new_entity->jugador->nombre = "Ruzalos";
+    } 
+    else if (type==3){
+        new_entity->vida_max = 25000;
+        new_entity->type = "Ruiz, el Gemelo Malvado del Profesor Ruz";
+        new_entity->jugador->nombre = "Ruiz, el Gemelo Malvado del Profesor Ruz";
+    }
+    new_entity->alive = true;
+    new_entity->monstruo->used_salto = false;
+    new_entity->alive = true;
+    new_entity->dmg_per_turn = 0;
+    new_entity->vida = new_entity->vida_max;
+    new_entity->dmg_modifier = 1;
+    new_entity->dmg_recieved_modifier = 1;
+    new_entity->times_sangrado = 0;
+    return new_entity;
+}
+
 // Función usada para que una entity pueda usar una habilidad
 // @param [entity*] user: jugador que esta usando la habilidad
 // @param [entity*] target: el monstruo que esta siendo atacado

@@ -5,7 +5,7 @@
 
 void welcome_client(int client_socket){
     char* welcome_msg = "Bienvenido a Monster Hunter: Ruz";
-    server_send_message(client_socket, 0,welcome_msg);
+    server_send_message(client_socket, 2,welcome_msg);
     //code: 0 -> welcome msg
 }
 
@@ -49,11 +49,34 @@ void notify_leader(int leader, entity** players, int new_player){
             break;
         }
     }
-    server_send_message(leader,1,msg);
+    server_send_message(leader,3,msg);
 }
 
-void start_game(){
-    
+bool game(entity** players, int leader,int connections){
+    int count_players_with_name = 0;
+    char *msg = server_receive_payload(leader);
+    int type = atoi(msg);
+    free(msg);
+    bool start = false;
+    for(int i=0; i<4; i++){
+        if(players[i]!=0){
+            if(strcmp(players[i]->jugador->nombre,"")!=0 && strcmp(players[i]->type,"")!=0 ){
+                    count_players_with_name++;
+            }
+        } 
+    }
+    if(connections==count_players_with_name){
+        start = true;
+        players[4] = new_monster(type);
+        //avisar a los jugadores que el juego comienza
+        
+
+    }  else{
+        //error: no todos los jugadores han ingresado su nombre
+        server_send_message(leader,4,"");
+    }  
+
+    return start;
 }
 
 // void pasar_turno(entity** players, entity* target, int* rondas, int* rondas_since_fb, int amt_players)

@@ -27,14 +27,31 @@ void lobby(int server_socket){
 
 void notification_leader(int server_socket){
   char * message = client_receive_payload(server_socket);
-  printf("Ha ingresado un nuevo jugador:%s\n", message);
+  printf("Ha ingresado un nuevo jugador: %s\n", message);
   free(message);
-  
-  //preguntar si quiere iniciar el juego 
-  //llegada de mensaje de error desde el servidor si es que falta alguien que guarde su nombre
-  //hacer que elija el enemigo
-  //enviar al servidor
+  printf("¿Deseas comenzar la partida?\n (0) No\n (1) Sí\n");
+  char* ipt = get_input();
+  int input = atoi(ipt);
+  free(ipt);
+  if(input==1){
+    printf("¿Con qué monstruo deseas combatir?\n (1) Great JagRuz\n (2) Ruzalos\n (3) Ruiz, el Gemelo Malvado del Profesor Ruz\n");
+    char* response = get_input();
+    client_send_message(server_socket,2 ,response);
+    free(response);  
+  }else if(input==0){
+    printf("Esperando más jugadores...\n");
+  }
+}
+void catch_error_start_game(int server_socket){
+  printf("Hay jugadores que aun no ingresan su nombre y/o clase...\n");
 
 }
+
+void start_game(int server_socket){
+  
+}
+
+
+
 
 

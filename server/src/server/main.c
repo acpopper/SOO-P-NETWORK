@@ -23,6 +23,11 @@ void * handle_connection(void *p_client_socket){
     else if(msg_code == 1){
       add_type(entities, client_socket);
     }
+    else if(msg_code==2){
+      start_game=game(entities, client_socket, actual_connections);
+      
+      //comenzar juego, solo lo puede enviar si es el lider
+    }
     else if(msg_code ==-1){
       //eliminar cliente del array
       //actualizar actual_connection ojo: que es un thread-> hacer sincronizacion

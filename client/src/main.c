@@ -18,12 +18,22 @@ int main (int argc, char *argv[]){
   connected=1;
   while(connected){
       int msg_code = client_receive_id(server_socket);
-      if(msg_code==0){
+      if(msg_code==2){
         lobby(server_socket);
       }
-      else if(msg_code==1){
+      else if(msg_code==3){
         notification_leader(server_socket);
       }
+      else if(msg_code==4){
+        catch_error_start_game(server_socket);
+        sleep(1);
+        //error: aun no se puede comenzar partida-> solo lo puede recibir el lider
+      }
+      else if(msg_code==5){
+        //comienza el juego
+        start_game(server_socket);
+      }
+      
   }
 
   close(server_socket);
