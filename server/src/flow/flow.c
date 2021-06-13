@@ -1,5 +1,13 @@
 #include "flow.h"
+#include "../coms/comunication.h"
+#include "../entities/chars.h"
 
+
+void welcome_client(int client_socket){
+    char* welcome_msg = "Bienvenido a Monster Hunter: Ruz";
+    server_send_message(client_socket, 0,welcome_msg);
+    //code: 0 -> welcome msg
+}
 // void pasar_turno(entity** players, entity* target, int* rondas, int* rondas_since_fb, int amt_players)
 // {
 //     for (int i = 0; i < amt_players; i++)
