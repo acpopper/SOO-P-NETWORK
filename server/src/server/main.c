@@ -22,65 +22,77 @@ char * revert(char * message){
 
 int main(int argc, char *argv[]){
   entity** players = malloc(sizeof(player*) * 4);
-  char** actions = malloc(sizeof(char*) * 5);
-  char* action_p1 = malloc(sizeof(char*));
-  char* action_p2 = malloc(sizeof(char*));
-  char* action_p3 = malloc(sizeof(char*));
-  char* action_p4 = malloc(sizeof(char*));
-  actions[0] = action_p1;
-  actions[1] = action_p2;
-  actions[2] = action_p3;
-  actions[3] = action_p4;
+  int player_amt = 1;
   entity* p1 = new_entity("juan", false, "Cazador", true);
   entity* p2 = new_entity("fede", false, "Médico", true);
   entity* p3 = new_entity("fco", false, "Hacker", true);
   entity* p4 = new_entity("pedro", true, "Cazador", true);
   int* rondas = malloc(sizeof(int));
   int* rondas_rm = malloc(sizeof(int));
-  *rondas_rm = 0;
-  *rondas = 0;
+  *rondas_rm = 1;
+  *rondas = 1;
   players[0] = p1;
-  players[1] = p2;
-  players[2] = p3;
-  players[3] = p4;
+  // players[1] = p2;
+  // players[2] = p3;
+  // players[3] = p4;
   entity* m1 = new_entity("", false, "Ruiz, el Gemelo Malvado del Profesor Ruz", false);
   bool battle_going = true;
+  int* ab_p1 = malloc(4);
+  int* ab_p2 = malloc(4);
+  int* ab_p3 = malloc(4);
+  int* ab_p4 = malloc(4);
+  int** used_abilities = calloc(5, sizeof(int*));
+  used_abilities[0] = ab_p1;
+  used_abilities[1] = ab_p2;
+  used_abilities[2] = ab_p3;
+  used_abilities[3] = ab_p4;
   int* c = malloc(4);
   while (battle_going)
   {
     printf("RONDA: %d\n", *rondas);
-    printf( "0 para estocada 1 para corte cruzado:\n");
-    scanf("%d", c);
-    if (*c == 0)
+    for (int i = 0; i < player_amt; i++)
     {
-      use_ability(p1, m1, "Estocada", players, 4);
+      printf("Elige tu habilidad %s\n", players[i]->jugador->nombre);
+      printf("[1] %s\n", players[i]->jugador->ability1_name);
+      printf("[2] %s\n", players[i]->jugador->ability2_name);
+      printf("[3] %s\n", players[i]->jugador->ability3_name);
+      scanf("%d", c);
+      used_abilities[i] = c;
+      if (!strcmp(players[i]->type, "Médico") && *c == 1)
+      {
+        printf("Selecciona jugador a curar\n");
+        for (int i = 0; i < player_amt; i++)
+        {
+          printf("[%d] %s vida %d/%d\n", i+1, players[i]->jugador->nombre, players[i]->vida, players[i]->vida_max);
+        }
+        scanf("%d", c);
+        used_abilities[4] = c;
+      }
+      
     }
-    else
+    for (int i = 0; i < player_amt; i++)
     {
-      use_ability(p1, m1, "Corte Cruzado", players, 4);
+      switch (*used_abilities[i])
+      {
+        case 1:
+          use_ability(players[i], m1, players[i]->jugador->ability1_name, players, player_amt);
+          break;
+        case 2:
+          use_ability(players[i], m1, players[i]->jugador->ability2_name, players, player_amt);
+          break;
+        case 3:
+          use_ability(players[i], m1, players[i]->jugador->ability3_name, players, player_amt);
+          break;
+      }
     }
-    entity_use_ability(m1, players, 4, rondas_rm);
-    for (int i = 0; i < 4; i++)
+    entity_use_ability(m1, players, player_amt, rondas_rm);
+    for (int i = 0; i < player_amt; i++)
     {
       printf("Vida jugador %s: %d/%d\n", players[i]->jugador->nombre, players[i]->vida, players[i]->vida_max);
     }
     printf("Vida monstruo %s: %d/%d\n", m1->type, m1->vida, m1->vida_max);
-    battle_going = pasar_turno(players, m1, rondas, rondas_rm, 4);
+    battle_going = pasar_turno(players, m1, rondas, rondas_rm, player_amt);
   }
-  
-  // printf("%d\n", m1->vida);
-  // player* p0 = new_player("prer", true, "Médico");
-  
-  // if (entity_use_ability(m1, players, 4, rondas))
-  // {
-  //   for (int i = 0; i < 4; i++)
-  //   {
-  //     printf("Vida jugador %d: %d/%d\n", i, players[i]->vida, players[i]->vida_max);
-  //     // printf("%d\n", players[i]->jugador->last_used_distraer);
-  //   }
-
-  // }
-  // printf("%d\n", *rondas);
   
   free(rondas);
   free(rondas_rm);
@@ -89,12 +101,12 @@ int main(int argc, char *argv[]){
   free_entity(p3);
   free_entity(p4);
   free_entity(m1);
-  free(action_p1);
-  free(action_p2);
-  free(action_p3);
-  free(action_p4);
   free(players);
-  free(actions);
+  free(used_abilities);
+  free(ab_p1);
+  free(ab_p2);
+  free(ab_p3);
+  free(ab_p4);
   free(c);
 
   // int i;

@@ -70,7 +70,6 @@ entity* new_entity(char* nombre, bool party_leader, char* type, bool is_player)
         new_entity->jugador->nombre = nombre;
         new_entity->jugador->party_leader = party_leader;
         new_entity->jugador->last_used_distraer = false;
-        new_entity->times_fb = 0;
     }
     else
     {
@@ -96,6 +95,7 @@ entity* new_entity(char* nombre, bool party_leader, char* type, bool is_player)
     new_entity->dmg_modifier = 1;
     new_entity->dmg_recieved_modifier = 1;
     new_entity->times_sangrado = 0;
+    new_entity->times_fb = 0;
     return new_entity;
 }
 

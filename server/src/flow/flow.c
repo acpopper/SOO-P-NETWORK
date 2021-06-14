@@ -2,9 +2,10 @@
 
 // Función para pasar de turno
 // @return [bool] retorna true si el combate sigue y false si el combate se acaba
-bool pasar_turno(entity** players, entity* target, int* rondas, int* rondas_since_fb, int amt_players)
+bool pasar_turno(entity** players, entity* target, int* rondas, int* rondas_since_rm, int amt_players)
 {
     *rondas += 1;
+    *rondas_since_rm += 1;
     bool someone_alive = false;
     for (int i = 0; i < amt_players; i++)
     {
