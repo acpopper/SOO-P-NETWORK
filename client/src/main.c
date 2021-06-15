@@ -15,7 +15,7 @@ int main (int argc, char *argv[]){
   int connected = 0;
   // Se prepara el socket
   int server_socket = prepare_socket(IP, PORT); 
-  connected=1;
+  connected = 1;
   while(connected){
       int msg_code = client_receive_id(server_socket);
       if(msg_code==2){
@@ -32,6 +32,10 @@ int main (int argc, char *argv[]){
       else if(msg_code==5){
         //comienza el juego-> notificacion para todos los jugadores- 
         start_game(server_socket);
+      }
+      else if(msg_code == 100){
+        printf("El número máximo de jugadores ya esta completo\n");
+        connected =0;
       }
       
   }

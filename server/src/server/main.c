@@ -25,8 +25,7 @@ void * handle_connection(void *p_client_socket){
     }
     else if(msg_code==2){
       start_game=game(entities, client_socket, actual_connections);
-      
-      //comenzar juego, solo lo puede enviar si es el lider
+      //comenzar juego, solo lo puede llegar codigo desde el lider
     
     }
     else if(msg_code ==-1){
@@ -67,6 +66,10 @@ int main(int argc, char *argv[]){
       int *pclient = malloc(sizeof(int));
       *pclient = client_socket;
       pthread_create(&client, NULL, handle_connection,pclient);
+    } else{
+      int client_socket = accept_new_connection(server_socket);
+      server_send_message(client_socket, 100,"");
+      close(client_socket);
     }
   }
   return 0;
