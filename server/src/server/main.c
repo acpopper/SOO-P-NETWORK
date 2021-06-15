@@ -3,127 +3,72 @@
 #include <stdlib.h>
 #include "../coms/comunication.h"
 #include "../coms/conection.h"
+#include "../flow/flow.h"
 #include "../entities/chars.h"
 
-char * revert(char * message){
-  //Se invierte el mensaje
+int max_connections = 4;
+int actual_connections = 0; //size de entities
+entity** entities;
+bool start_game = false;
 
-  int len = strlen(message) + 1;
-  char * response = malloc(len);
-
-  for (int i = 0; i < len-1; i++)
-  {
-    response[i] = message[len-2-i];
+void * handle_connection(void *p_client_socket){
+  int client_socket = *((int*)p_client_socket);
+  free(p_client_socket);
+  welcome_client(client_socket);
+  while(1){
+    int msg_code = server_receive_id(client_socket);
+    if(msg_code == 0){
+      add_name(entities,client_socket);
+    }
+    else if(msg_code == 1){
+      add_type(entities, client_socket);
+    }
+    else if(msg_code==2){
+      start_game=game(entities, client_socket, actual_connections);
+      
+      //comenzar juego, solo lo puede enviar si es el lider
+    
+    }
+    else if(msg_code ==-1){
+      //cliente pide desconectarse
+      //eliminar cliente del array
+      //actualizar actual_connection ojo: que es un thread-> hacer sincronizacion
+      //hacer free del cliente
+      //cerrar socket
+      //break;
+    }  
   }
-  response[len-1] = '\0';
-  return response;
+  exit(0);
 }
 
 int main(int argc, char *argv[]){
-  entity** players = malloc(sizeof(player*) * 4);
-  char** actions = malloc(sizeof(char*) * 5);
-  char* action_p1 = malloc(sizeof(char*));
-  char* action_p2 = malloc(sizeof(char*));
-  char* action_p3 = malloc(sizeof(char*));
-  char* action_p4 = malloc(sizeof(char*));
-  actions[0] = action_p1;
-  actions[1] = action_p2;
-  actions[2] = action_p3;
-  actions[3] = action_p4;
-  entity* p1 = new_entity("juan", false, "Cazador", true);
-  entity* p2 = new_entity("fede", false, "Médico", true);
-  entity* p3 = new_entity("fco", false, "Hacker", true);
-  entity* p4 = new_entity("pedro", true, "Cazador", true);
-  int* rondas = malloc(sizeof(int));
-  *rondas = 8;
-  *rondas += 1;
-  players[0] = p1;
-  players[1] = p2;
-  players[2] = p3;
-  players[3] = p4;
-  printf("%d\n", p1->vida);
-  entity* m1 = new_entity("", false, "Ruiz, el Gemelo Malvado del Profesor Ruz", false);
-  printf("%d\n", m1->vida);
-  // printf("%d\n", m1->vida);
-  // player* p0 = new_player("prer", true, "Médico");
-  if (use_ability(p1, m1, "Estocada", players, 1))
-  {
-    printf("%d\n", m1->vida);
-    printf("%d\n", players[0]->vida);
-  }
-  if (entity_use_ability(m1, players, 4, rondas))
-  {
-    for (int i = 0; i < 4; i++)
-    {
-      printf("Vida jugador %d: %d/%d\n", i, players[i]->vida, players[i]->vida_max);
-      // printf("%d\n", players[i]->jugador->last_used_distraer);
+  char * IP = argv[2];
+  int PORT = atoi(argv[4]);
+  int server_socket = setup_server(IP, PORT);
+  entities = calloc(5,sizeof(entity)); //son 5 porque el ultimo es el monster
+  while (1){
+    if (actual_connections<max_connections && !start_game){
+      printf("Esperando conexiones...\n");
+      int client_socket = accept_new_connection(server_socket);
+      for(int i=0; i<4; i++){
+        if(entities[i]==0){
+          if(actual_connections==0){
+            entities[i] = new_entity(true, client_socket,true,"","");
+          } else{
+            entities[i] = new_entity(false, client_socket,true,"","");
+            
+          }
+          break;
+        }
+      }
+      actual_connections++;
+      printf("Nuevo cliente conectado\n");
+      pthread_t client;
+      int *pclient = malloc(sizeof(int));
+      *pclient = client_socket;
+      pthread_create(&client, NULL, handle_connection,pclient);
     }
-
   }
-  // printf("%d\n", *rondas);
-  
-  free(rondas);
-  free_entity(p1);
-  free_entity(p2);
-  free_entity(p3);
-  free_entity(p4);
-  free_entity(m1);
-  free(action_p1);
-  free(action_p2);
-  free(action_p3);
-  free(action_p4);
-  free(players);
-  free(actions);
-
-  // int i;
-  // for (i = 0; i < argc; i++)
-  // printf("argv[%d] = %s\n", i, argv[i]);
-  // while (1)
-  // {
-
-  // }
-
-  // Se define una IP y un puerto
-  // char * IP = argv[2];
-  // int PORT = atoi(argv[4]);
-
-  // // Se crea el servidor y se obtienen los sockets de ambos clientes.
-  // PlayersInfo * players_info = prepare_sockets_and_get_clients(IP, PORT);
-
-  // // Le enviamos al primer cliente un mensaje de bienvenida
-  // char * welcome = "Bienvenido Cliente 1!!";
-  // server_send_message(players_info->socket_c1, 1, welcome);
-
-  // // Guardaremos los sockets en un arreglo e iremos alternando a quién escuchar.
-  // int sockets_array[2] = {players_info->socket_c1, players_info->socket_c2};
-  // int my_attention = 0;
-  // while (1)
-  // {
-  //   // Se obtiene el paquete del cliente 1
-  //   int msg_code = server_receive_id(sockets_array[my_attention]);
-
-  //   if (msg_code == 1) //El cliente me envió un mensaje a mi (servidor)
-  //   {
-  //     char * client_message = server_receive_payload(sockets_array[my_attention]);
-  //     printf("El cliente %d dice: %s\n", my_attention+1, client_message);
-
-  //     // Le enviaremos el mismo mensaje invertido jeje
-  //     char * response = revert(client_message);
-
-  //     // Le enviamos la respuesta
-  //     server_send_message(sockets_array[my_attention], 1, response);
-  //   }
-  //   else if (msg_code == 2){ //El cliente le envía un mensaje al otro cliente
-  //     char * client_message = server_receive_payload(sockets_array[my_attention]);
-  //     printf("Servidor traspasando desde %d a %d el mensaje: %s\n", my_attention+1, ((my_attention+1)%2)+1, client_message);
-
-  //     // Mi atención cambia al otro socket
-  //     my_attention = (my_attention + 1) % 2;
-
-  //     server_send_message(sockets_array[my_attention], 2, client_message);
-  //   }
-  //   printf("------------------\n");
-  // }
-
   return 0;
 }
+

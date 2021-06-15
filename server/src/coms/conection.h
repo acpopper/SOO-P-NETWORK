@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <pthread.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -22,4 +23,5 @@ typedef struct players_info{
   int socket_c4;
 } PlayersInfo;
 
-PlayersInfo * prepare_sockets_and_get_clients(char * IP, int port);
+int setup_server(char * IP, int port);
+int accept_new_connection(int server_socket);

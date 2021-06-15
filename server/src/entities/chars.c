@@ -30,47 +30,29 @@ int proba_copia_ruiz = 40;
 int proba_repro_ruiz = 20;
 int proba_rm_ruiz = 40;
 int rm_multiplier_ruiz = 100;
-
-
 // Crea un nuevo entity en el heap
 // @param [char*] nombre: nombre del jugador
 // @param [bool] party_leader: indica si es o no party leader
 // @param [char*] type: clase del jugador o tipo de monstruo, debe ser como en el enunciado
 // @param [bool] is_player: indica si es un juigador o monstruo
 // @return [entity*] retorna el puntero al nuevo entity 
-entity* new_entity(char* nombre, bool party_leader, char* type, bool is_player)
+entity* new_entity( bool party_leader, int client_socket, bool is_player, char *name, char* type)
 {
     entity* new_entity = malloc(sizeof(entity));
     if (is_player)
     {
         new_entity->jugador = malloc(sizeof(entity));
+        new_entity->jugador->client_socket = client_socket;
         new_entity->monstruo = NULL;
-        new_entity->is_player = true;
-        if (!strcmp(type, "Cazador")) {
-            new_entity->vida_max = 5000;
-            new_entity->type = type;
-            new_entity->jugador->ability1_name = "Estocada";
-            new_entity->jugador->ability2_name = "Corte Cruzado";
-            new_entity->jugador->ability3_name = "Distraer";
-        } else if (!strcmp(type, "Médico")) {
-            new_entity->vida_max = 3000;
-            new_entity->type = type;
-            new_entity->jugador->ability2_name = "Destello Regenerador";
-            new_entity->jugador->ability3_name = "Descarga Vital";
-            new_entity->jugador->ability1_name = "Curar";
-        } else if (!strcmp(type, "Hacker")){
-            new_entity->vida_max = 2500;
-            new_entity->type = type;
-            new_entity->jugador->ability1_name = "Inyección SQL";
-            new_entity->jugador->ability2_name = "Ataque DDOS";
-            new_entity->jugador->ability3_name = "Fuerza Bruta";
-        }
+        new_entity->is_player = is_player;
         new_entity->jugador->intoxicated = false;
         new_entity->jugador->turns_intoxicated = 0;
-        new_entity->jugador->nombre = nombre;
         new_entity->jugador->party_leader = party_leader;
         new_entity->jugador->last_used_distraer = false;
         new_entity->jugador->times_fb = 0;
+        new_entity->jugador->nombre=name;
+        new_entity->type= type;
+        
     }
     else
     {
@@ -90,6 +72,65 @@ entity* new_entity(char* nombre, bool party_leader, char* type, bool is_player)
         new_entity->alive = true;
         new_entity->monstruo->used_salto = false;
     }
+    new_entity->alive = true;
+    new_entity->dmg_per_turn = 0;
+    new_entity->vida = new_entity->vida_max;
+    new_entity->dmg_modifier = 1;
+    new_entity->dmg_recieved_modifier = 1;
+    new_entity->times_sangrado = 0;
+    return new_entity;
+}
+//funcion para agregar el nombre al jugador
+void name_entity_player(entity* player, char* name){
+    player->jugador->nombre = name;
+}
+//funcion para agregar el type al jugador
+void type_entity_player(entity* player, int type){
+    if (type==1) {
+        player->vida_max = 5000;
+        player->type = "Cazador";
+        player->jugador->ability1_name = "Estocada";
+        player->jugador->ability2_name = "Corte Cruzado";
+        player->jugador->ability3_name = "Distraer";
+    } else if (type==2) {
+        player->vida_max = 3000;
+        player->type = "Médico";
+        player->jugador->ability2_name = "Destello Regenerador";
+        player->jugador->ability3_name = "Descarga Vital";
+        player->jugador->ability1_name = "Curar";
+    } else if (type==3){
+        player->vida_max = 2500;
+        player->type = "Hacker";
+        player->jugador->ability1_name = "Inyección SQL";
+        player->jugador->ability2_name = "Ataque DDOS";
+        player->jugador->ability3_name = "Fuerza Bruta";
+    }
+}
+
+entity* new_monster(int type){
+     entity* new_entity = malloc(sizeof(entity));
+    new_entity->monstruo = malloc(sizeof(entity));
+    new_entity->jugador = malloc(sizeof(entity));
+    new_entity->is_player = false;
+    new_entity->jugador->nombre = type;
+    if (type==1){
+        new_entity->vida_max = 10000;
+        new_entity->type ="Great JagRuz";
+        new_entity->jugador->nombre = "Great JagRuz";
+    }
+       
+    else if (type== 2){
+        new_entity->vida_max = 20000;
+        new_entity->type = "Ruzalos";
+        new_entity->jugador->nombre = "Ruzalos";
+    } 
+    else if (type==3){
+        new_entity->vida_max = 25000;
+        new_entity->type = "Ruiz, el Gemelo Malvado del Profesor Ruz";
+        new_entity->jugador->nombre = "Ruiz, el Gemelo Malvado del Profesor Ruz";
+    }
+    new_entity->alive = true;
+    new_entity->monstruo->used_salto = false;
     new_entity->alive = true;
     new_entity->dmg_per_turn = 0;
     new_entity->vida = new_entity->vida_max;

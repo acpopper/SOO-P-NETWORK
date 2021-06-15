@@ -7,6 +7,7 @@
 
 typedef struct Player
 {
+    int client_socket;
     bool party_leader;
     bool intoxicated;
     char* nombre;
@@ -38,8 +39,13 @@ typedef struct Entity
     monster* monstruo;
 } entity;
 
-entity* new_monster(char* type);
-entity* new_entity(char* nombre, bool party_leader, char* type, bool is_player);
+
+
+entity* new_monster(int type);
+entity* new_entity(bool party_leader, int client_socket, bool is_player, char *name, char* type); //crear entity
+void name_entity_player(entity* player, char* name);
+void type_entity_player(entity* player, int type);
+
 bool use_ability(entity* user, entity* target, char* ability, entity ** players, int amt_of_players);
 bool use_ability_cazador(entity* user, entity* target, char* ability, entity** players, int amt_of_players);
 bool use_ability_medico(entity* user, entity* target, char* ability, entity** players, int amt_of_players);
