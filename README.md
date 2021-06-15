@@ -2,7 +2,7 @@
 **1. Paquetes recibidos por el servidor**
 * code = 0: se recibe el nombre del jugador
 * code = 1: se recibe la clase del jugador
-* code = 2: indica que el lider quiere comenzar la partida, payload = enemigo
+* code = 2: indica que el lider quiere comenzar la partida, payload = enemigo (puede ser 1, 2 o 3)
 * code = -1: el cliente se desea desconectar 
 
 **2. Paquetes recibidos por el cliente**
