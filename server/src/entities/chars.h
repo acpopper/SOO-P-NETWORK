@@ -14,6 +14,7 @@ typedef struct Player
     char* ability1_name;
     char* ability2_name;
     char* ability3_name;
+    int times_fb;
     bool last_used_distraer;
 } player;
 
@@ -33,7 +34,6 @@ typedef struct Entity
     float dmg_recieved_modifier;
     int times_sangrado;
     int dmg_per_turn;
-    int times_fb;
     player* jugador;
     monster* monstruo;
 } entity;
