@@ -55,27 +55,36 @@ bool game(entity** players, int leader,int connections){
     int type = atoi(msg);
     free(msg);
     bool start = false;
-    for(int i=0; i<4; i++){
-        if(players[i]!=0){
-            if(strcmp(players[i]->jugador->nombre,"")!=0 && strcmp(players[i]->type,"")!=0 ){
+    if(!type){
+        if(connections == 4){
+            //lider esta obligado a comenzar -> debe elegir monstruo
+            printf("hola\n");
+            server_send_message(leader, 4,"1" );
+        }
+    } else{
+        for(int i=0; i<4; i++){
+            if(players[i]!=0){
+                if(strcmp(players[i]->jugador->nombre,"")!=0 && strcmp(players[i]->type,"")!=0 ){
                     count_players_with_name++;
+                }
+            } 
+        }
+        if(connections==count_players_with_name){
+            start = true;
+            players[4] = new_monster(type);
+        
+            for(int i=0; i<4;i++){
+                if(players[i]!=0){
+                    server_send_message(players[i]->jugador->client_socket,5,players[4]->type);
+                }
             }
+
+        }  else{
+            //error: no todos los jugadores han ingresado su nombre
+            server_send_message(leader,4,"0");
         } 
     }
-    if(connections==count_players_with_name){
-        start = true;
-        players[4] = new_monster(type);
-        
-        for(int i=0; i<4;i++){
-            if(players[i]!=0){
-                server_send_message(players[i]->jugador->client_socket,5,players[4]->type);
-            }
-        }
-
-    }  else{
-        //error: no todos los jugadores han ingresado su nombre
-        server_send_message(leader,4,"");
-    }  
+   
 
     return start;
 }

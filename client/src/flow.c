@@ -30,17 +30,32 @@ void notification_leader(int server_socket){
   char* ipt = get_input();
   int input = atoi(ipt);
   if(input==1){
-    printf("¿Con qué monstruo deseas combatir?\n (1) Great JagRuz\n (2) Ruzalos\n (3) Ruiz, el Gemelo Malvado del Profesor Ruz\n");
-    char* response = get_input();
-    client_send_message(server_socket,2 ,response);  
+    choose_monster(server_socket);  
   }else if(input==0){
+    //debo enviar mensaje al servidor porque qué pasa si el lider no desea comenzar pero ya está el máx de jugadores
     printf("Esperando más jugadores...\n");
+    client_send_message(server_socket,2,"0");
   }
 }
 void catch_error_start_game(int server_socket){
-  printf("Hay jugadores que aun no ingresan su nombre y/o clase...\n");
-
+  char* error =  client_receive_payload(server_socket);
+  int er = atoi(error);
+  free(error);
+  if (error){
+    printf("Esta el máximo de jugadores conectados ¡Es hora de comenzar a jugar!\n");
+    choose_monster(server_socket);
+  } else{
+    printf("Hay jugadores que aun no ingresan su nombre y/o clase...\n");
+  }
 }
+
+void choose_monster(int server_socket){
+  printf("¿Con qué monstruo deseas combatir?\n (1) Great JagRuz\n (2) Ruzalos\n (3) Ruiz, el Gemelo Malvado del Profesor Ruz\n");
+  char* response = get_input();
+  client_send_message(server_socket,2 ,response);
+  free(response); 
+}
+
 void start_game(int server_socket){
   char * message = client_receive_payload(server_socket);
   printf("¡Que el juego comience! Su enemigo es: %s\n", message);

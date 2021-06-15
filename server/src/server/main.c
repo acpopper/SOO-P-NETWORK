@@ -87,6 +87,10 @@ int main(int argc, char *argv[]){
       int *pclient = malloc(sizeof(int));
       *pclient = client_socket;
       pthread_create(&client, NULL, handle_connection,pclient);
+    } else{
+      int client_socket = accept_new_connection(server_socket);
+      server_send_message(client_socket, 100,"");
+      close(client_socket);
     }
   }
   for(int i=0; i<5; i++){
