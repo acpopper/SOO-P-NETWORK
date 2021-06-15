@@ -18,7 +18,6 @@ void add_name(entity** players, int client_socket){
         }
         }   
     }
-    free(name);
 }
 
 void add_type(entity** players, int client_socket){
@@ -37,15 +36,13 @@ void add_type(entity** players, int client_socket){
         }   
     }
     notify_leader(leader,players, client_socket);
-
 }
+
 void notify_leader(int leader, entity** players, int new_player){
-    char* msg="";
+    char msg[20];
     for(int i=0; i<4; i++){
         if(players[i]->jugador->client_socket==new_player){
-            msg=players[i]->jugador->nombre;
-            strcat(msg,"-");
-            strcat(msg,players[i]->type);
+            sprintf(msg, "%s - %s \n", players[i]->jugador->nombre, players[i]->type);
             break;
         }
     }
@@ -81,6 +78,43 @@ bool game(entity** players, int leader,int connections){
     }  
 
     return start;
+}
+
+void turno(entity** players, int client_socket){
+    int turno_actual = client_socket;
+    print_situacion(turno_actual, players);
+    for(int i=0; i<4; i++){
+        if(players[i]->jugador->client_socket == client_socket){
+            if(strcmp(players[i]->type, "Cazador") == 0){
+                server_send_message(turno_actual,7,"");
+            }
+            else if (strcmp(players[i]->type, "Médico") == 0){
+                server_send_message(turno_actual,8,"");
+            }
+            else if (strcmp(players[i]->type, "Hacker") == 0){
+                server_send_message(turno_actual,9,"");
+            }
+            break;
+        }
+    }
+}
+
+void print_situacion(int client_socket, entity** players){
+    char msg[100];
+    char info[50];
+    for(int i=0; i<5; i++){
+        if (players[i]!= 0){
+            if (players[i]->is_player){
+                sprintf(info, "[%s] %s -> VIDA: %d / %d\n", players[i]->jugador->nombre, players[i]->type, players[i]->vida, players[i]->vida_max);
+                strcat(msg, info);
+            }
+            else{
+                sprintf(info, "[MONSTER] %s -> VIDA: %d / %d\n", players[i]->type, players[i]->vida, players[i]->vida_max);
+                strcat(msg, info);
+            }
+        } 
+    }
+    server_send_message(client_socket,6,msg);
 }
 
 // void pasar_turno(entity** players, entity* target, int* rondas, int* rondas_since_fb, int amt_players)

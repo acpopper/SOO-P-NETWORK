@@ -108,7 +108,7 @@ void type_entity_player(entity* player, int type){
 }
 
 entity* new_monster(int type){
-     entity* new_entity = malloc(sizeof(entity));
+    entity* new_entity = malloc(sizeof(entity));
     new_entity->monstruo = malloc(sizeof(entity));
     new_entity->jugador = malloc(sizeof(entity));
     new_entity->is_player = false;
@@ -481,6 +481,7 @@ void free_entity(entity* entidad)
 {
     if (entidad->is_player)
     {
+        free(entidad->jugador->nombre);
         free(entidad->jugador);
     }
     else

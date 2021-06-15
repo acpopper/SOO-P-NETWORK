@@ -13,7 +13,6 @@ bool start_game = false;
 
 void * handle_connection(void *p_client_socket){
   int client_socket = *((int*)p_client_socket);
-  free(p_client_socket);
   welcome_client(client_socket);
   while(1){
     int msg_code = server_receive_id(client_socket);
@@ -25,9 +24,30 @@ void * handle_connection(void *p_client_socket){
     }
     else if(msg_code==2){
       start_game=game(entities, client_socket, actual_connections);
-      
+      if (start_game){
+        turno(entities, client_socket);
+      }
       //comenzar juego, solo lo puede enviar si es el lider
-    
+    }
+    else if(msg_code == 3){ 
+      char *msg = server_receive_payload(client_socket);
+      int action = atoi(msg);
+      if (action == 0){
+        // Rendirse
+        printf("\n"); //COMPLETAR
+      }
+      else if (action == 1){
+        // Habilidad 1
+        printf("\n"); //COMPLETAR
+      }
+      else if (action == 2){
+        // Habilidad 2 
+        printf("\n"); //COMPLETAR
+      }
+      else if (action == 3){
+        // Habilidad 3
+        printf("\n"); //COMPLETAR
+      }
     }
     else if(msg_code ==-1){
       //cliente pide desconectarse
@@ -69,6 +89,12 @@ int main(int argc, char *argv[]){
       pthread_create(&client, NULL, handle_connection,pclient);
     }
   }
+  for(int i=0; i<5; i++){
+    if(entities[i] != 0){
+      free_entity(entities[i]);
+    }
+  }
+  free(entities);
   return 0;
 }
 

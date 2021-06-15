@@ -6,8 +6,6 @@
 #include "flow.h"
 
 
-
-
 int main (int argc, char *argv[]){
   //Se obtiene la ip y el puerto donde está escuchando el servidor (la ip y puerto de este cliente da igual)
   char * IP = argv[2];
@@ -33,13 +31,21 @@ int main (int argc, char *argv[]){
         //comienza el juego-> notificacion para todos los jugadores- 
         start_game(server_socket);
       }
-      
+       else if(msg_code==6){
+        print_situacion(server_socket);
+      }
+      else if(msg_code==7){
+        select_action_cazador(server_socket);
+      }
+      else if(msg_code==8){
+        select_action_medico(server_socket);
+      }
+      else if(msg_code==9){
+        select_action_hacker(server_socket);
+      }      
   }
-
   close(server_socket);
-
-  return 0; 
-    
+  return 0;     
   }
   
   
