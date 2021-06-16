@@ -38,26 +38,32 @@ void * handle_connection(void *p_client_socket){
       }
       else if (action == 1){
         // Habilidad 1
-        // Encuentra las entities y usa la funcion use ability
+        // Encuentra las entities y usa la funcion use_ability que modifica los valores de las entidades
         entity* user;
         entity* target;
-        for(int i=0; i<5; i++){
-          if(entities[i] && entities[i]->is_player && entities[i]->jugador->client_socket==client_socket){
-            user = entities[i];
-          }
-          else if(entities[i] && !(entities[i]->is_player)){
-            target = entities[i];
-          }
-          use_ability(user, target, user->jugador->ability1_name, entities, actual_connections);
-        }
+        user = select_user(client_socket, entities);
+        target = select_target(client_socket, entities, 1, user->type);
+        use_ability(user, target, user->jugador->ability1_name, entities, actual_connections);
         printf("\n"); //COMPLETAR
       }
       else if (action == 2){
         // Habilidad 2 
+        // Encuentra las entities y usa la funcion use_ability que modifica los valores de las entidades
+        entity* user;
+        entity* target;
+        user = select_user(client_socket, entities);
+        target = select_target(client_socket, entities, 2, user->type);
+        use_ability(user, target, user->jugador->ability2_name, entities, actual_connections);
         printf("\n"); //COMPLETAR
       }
       else if (action == 3){
         // Habilidad 3
+        // Encuentra las entities y usa la funcion use_ability que modifica los valores de las entidades
+        entity* user;
+        entity* target;
+        user = select_user(client_socket, entities);
+        target = select_target(client_socket, entities, 3, user->type);
+        use_ability(user, target, user->jugador->ability2_name, entities, actual_connections);
         printf("\n"); //COMPLETAR
       }
     }
