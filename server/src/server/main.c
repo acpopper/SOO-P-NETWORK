@@ -34,7 +34,6 @@ void * handle_connection(void *p_client_socket){
       int action = atoi(msg);
       if (action == 0){
         // Rendirse
-        printf("\n"); //COMPLETAR
       }
       else if (action == 1){
         // Habilidad 1
@@ -43,8 +42,8 @@ void * handle_connection(void *p_client_socket){
         entity* target;
         user = select_user(client_socket, entities);
         target = select_target(client_socket, entities, 1, user->type);
-        use_ability(user, target, user->jugador->ability1_name, entities, actual_connections);
-        printf("\n"); //COMPLETAR
+        printf("User: %s Target: %s\n", user->jugador->nombre, target->type);
+        // use_ability(user, target, user->jugador->ability1_name, entities, actual_connections);
       }
       else if (action == 2){
         // Habilidad 2 
@@ -53,8 +52,8 @@ void * handle_connection(void *p_client_socket){
         entity* target;
         user = select_user(client_socket, entities);
         target = select_target(client_socket, entities, 2, user->type);
-        use_ability(user, target, user->jugador->ability2_name, entities, actual_connections);
-        printf("\n"); //COMPLETAR
+        printf("User: %s Target: %s\n", user->jugador->nombre, target->type);
+        // use_ability(user, target, user->jugador->ability2_name, entities, actual_connections);
       }
       else if (action == 3){
         // Habilidad 3
@@ -63,8 +62,8 @@ void * handle_connection(void *p_client_socket){
         entity* target;
         user = select_user(client_socket, entities);
         target = select_target(client_socket, entities, 3, user->type);
-        use_ability(user, target, user->jugador->ability2_name, entities, actual_connections);
-        printf("\n"); //COMPLETAR
+        printf("User: %s Target: %s\n", user->jugador->nombre, target->type);
+        // use_ability(user, target, user->jugador->ability2_name, entities, actual_connections);
       }
     }
     else if(msg_code ==-1){
