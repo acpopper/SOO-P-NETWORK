@@ -105,6 +105,7 @@ void type_entity_player(entity* player, int type){
         player->jugador->ability2_name = "Ataque DDOS";
         player->jugador->ability3_name = "Fuerza Bruta";
     }
+    player->vida=player->vida_max;
 }
 
 entity* new_monster(int type){
@@ -112,7 +113,6 @@ entity* new_monster(int type){
     new_entity->monstruo = malloc(sizeof(entity));
     new_entity->jugador = malloc(sizeof(entity));
     new_entity->is_player = false;
-    new_entity->jugador->nombre = type;
     if (type==1){
         new_entity->vida_max = 10000;
         new_entity->type ="Great JagRuz";
@@ -131,7 +131,6 @@ entity* new_monster(int type){
     }
     new_entity->alive = true;
     new_entity->monstruo->used_salto = false;
-    new_entity->alive = true;
     new_entity->dmg_per_turn = 0;
     new_entity->vida = new_entity->vida_max;
     new_entity->dmg_modifier = 1;
@@ -457,6 +456,12 @@ void dmg_entity(entity* attacker, entity* target, int dmg)
     {
         target->alive = false;
         target->vida = 0;
+        if(target->is_player){
+            printf("%s ha muerto!\n", target->jugador->nombre);
+        }
+        else {
+            printf("%s ha muerto!\n", target->type);
+        }
     }
 }
 

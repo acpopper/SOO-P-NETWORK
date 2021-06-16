@@ -15,8 +15,8 @@ void add_name(entity** players, int client_socket){
         if(players[i]!=0){
             if(players[i]->jugador->client_socket==client_socket){
                 name_entity_player(players[i], name);
+            }
         }
-        }   
     }
 }
 

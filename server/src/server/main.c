@@ -38,6 +38,18 @@ void * handle_connection(void *p_client_socket){
       }
       else if (action == 1){
         // Habilidad 1
+        // Encuentra las entities y usa la funcion use ability
+        entity* user;
+        entity* target;
+        for(int i=0; i<5; i++){
+          if(entities[i] && entities[i]->is_player && entities[i]->jugador->client_socket==client_socket){
+            user = entities[i];
+          }
+          else if(entities[i] && !(entities[i]->is_player)){
+            target = entities[i];
+          }
+          use_ability(user, target, user->jugador->ability1_name, entities, actual_connections);
+        }
         printf("\n"); //COMPLETAR
       }
       else if (action == 2){
