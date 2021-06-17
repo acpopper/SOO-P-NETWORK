@@ -7,13 +7,24 @@
 #include "../entities/chars.h"
 
 int max_connections = 4;
-int actual_connections = 0; //size de entities
+int actual_connections = 0; // # of entities
 entity** entities;
 bool start_game = false;
 
+// void * handle_connection(void *p_client_socket){
+  // int client_socket = *((int*)p_client_socket);
 void * handle_connection(void *p_client_socket){
   int client_socket = *((int*)p_client_socket);
   welcome_client(client_socket);
+  // Notifico a lider que alguien se metió
+  for(int i=0;i<5; i++){
+    if(entities[i] && entities[i]->is_player && entities[i]->jugador->client_socket==client_socket){
+      if(!(entities[i]->jugador->party_leader)){
+        avisos_lider(entities, "Nueva conexion!\nPlease wait...\n");    
+      }
+    }
+  }
+  
   while(1){
     int msg_code = server_receive_id(client_socket);
     if(msg_code == 0){
@@ -23,17 +34,21 @@ void * handle_connection(void *p_client_socket){
       add_type(entities, client_socket);
     }
     else if(msg_code==2){
+      // char *msg = server_receive_payload(client_socket);
+      // int against = atoi(msg);
+      // free(msg);
       // start_game=game(entities, client_socket, actual_connections);
-      if (start_game){
-        turno(entities, client_socket);
+      if(start_game){
+        // turno(entities, client_socket);
       }
       //comenzar juego, solo lo puede enviar si es el lider
     }
-    else if(msg_code == 3){ 
+    else if(msg_code == 3){
       char *msg = server_receive_payload(client_socket);
       int action = atoi(msg);
+      free(msg);
       if (action == 0){
-        // Rendirse
+        // Rendirse COMPLETAR
       }
       else{
         // Encuentra las entities y usa la funcion use_ability que modifica los valores de las entidades
@@ -61,28 +76,28 @@ int main(int argc, char *argv[]){
   char * IP = argv[2];
   int PORT = atoi(argv[4]);
   int server_socket = setup_server(IP, PORT);
-  entities = calloc(5,sizeof(entity)); //son 5 porque el ultimo es el monster
+  entities = calloc(5, sizeof(entity*)); //son 5 porque el ultimo es el monster
   while (1){
-    if (actual_connections<max_connections && !start_game){
+    if(actual_connections<max_connections && !start_game){
       printf("Esperando conexiones...\n");
       int client_socket = accept_new_connection(server_socket);
-      for(int i=0; i<4; i++){
+      for(int i=0; i<5; i++){
         if(entities[i]==0){
           if(actual_connections==0){
             entities[i] = new_entity(true, client_socket,true,"","");
           } else{
             entities[i] = new_entity(false, client_socket,true,"","");
-            
           }
+          actual_connections++;
           break;
         }
       }
-      actual_connections++;
       printf("Nuevo cliente conectado\n");
-      pthread_t client;
-      int *pclient = malloc(sizeof(int));
-      *pclient = client_socket;
-      pthread_create(&client, NULL, handle_connection,pclient);
+      pthread_t server_instance;
+      // int *pclient = malloc(sizeof(int));
+      // *pclient = client_socket;
+      int pclient = client_socket;
+      pthread_create(&server_instance, NULL, handle_connection, &pclient);
     } else{
       int client_socket = accept_new_connection(server_socket);
       server_send_message(client_socket, 100,"");
