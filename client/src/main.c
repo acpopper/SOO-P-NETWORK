@@ -47,6 +47,9 @@ int main (int argc, char *argv[]){
         printf("El número máximo de jugadores ya esta completo\n");
         connected =0;
       }
+      else if(msg_code==78){
+        display_players(server_socket);
+      }
       
   }
   close(server_socket);

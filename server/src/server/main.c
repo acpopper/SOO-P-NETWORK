@@ -34,19 +34,15 @@ void * handle_connection(void *p_client_socket){
       int action = atoi(msg);
       if (action == 0){
         // Rendirse
-        printf("\n"); //COMPLETAR
       }
-      else if (action == 1){
-        // Habilidad 1
-        printf("\n"); //COMPLETAR
-      }
-      else if (action == 2){
-        // Habilidad 2 
-        printf("\n"); //COMPLETAR
-      }
-      else if (action == 3){
-        // Habilidad 3
-        printf("\n"); //COMPLETAR
+      else{
+        // Encuentra las entities y usa la funcion use_ability que modifica los valores de las entidades
+        entity* user;
+        entity* target;
+        user = select_user(client_socket, entities);
+        target = select_target(client_socket, entities, action, user->type);
+        printf("User: %s Target: %s\n", user->jugador->nombre, target->type);
+        // use_ability(user, target, user->jugador->ability1_name, entities, actual_connections);
       }
     }
     else if(msg_code ==-1){

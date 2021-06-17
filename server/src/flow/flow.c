@@ -15,8 +15,8 @@ void add_name(entity** players, int client_socket){
         if(players[i]!=0){
             if(players[i]->jugador->client_socket==client_socket){
                 name_entity_player(players[i], name);
+            }
         }
-        }   
     }
 }
 
@@ -124,6 +124,62 @@ void print_situacion(int client_socket, entity** players){
         } 
     }
     server_send_message(client_socket,6,msg);
+}
+
+entity* select_user(int client_socket, entity** entities){
+    entity* user;
+    for(int i=0; i<5; i++){
+        if(entities[i] && entities[i]->is_player && entities[i]->jugador->client_socket==client_socket){
+            user = entities[i];
+        }
+    }
+    return user;
+}
+
+entity* select_target(int client_socket, entity** entities, int skill, char* type_user){
+    entity* target;
+    // Si no hay opcion de elegir (skills 2 o 3 para cualquiera) o si es cazador, target=monstruo
+    if(skill>1 || !strcmp(type_user, "Cazador")){
+        for(int i=0; i<5; i++){
+            if(entities[i] && !(entities[i]->is_player)){
+                target = entities[i];
+                printf("Se usó abilidad %i contra %s\n", skill, target->type);
+                return target;
+            }
+        }
+    }
+    // Si hay elección le pregunto
+    else {
+        printf("Eligiendo target\n");
+        display_players_targets(client_socket, entities);
+        char *msg = server_receive_payload(client_socket);
+        int player = atoi(msg);
+        free(msg);
+        int c = 0;
+        for(int i=0; i<5; i++){
+            if(entities[i] && entities[i]->is_player && player==c){
+                target = entities[i];
+                printf("Se usó abilidad %i contra %s\n", skill, target->type);
+                return target;
+            }
+            c+=1;
+        }
+    }
+    return NULL;
+}
+// Envía los jugadores en la party enumerados
+void display_players_targets(int client_socket, entity** entities){
+    char msg[100];
+    char info[50];
+    int contador = 0;
+    for(int i=0; i<5; i++){
+        if(entities[i] && entities[i]->is_player){
+            sprintf(info, "%i) %s\n", contador, entities[i]->jugador->nombre);
+            strcat(msg, info);
+            contador+=1;
+        }
+    }
+    server_send_message(client_socket, 78, msg);
 }
 
 // void pasar_turno(entity** players, entity* target, int* rondas, int* rondas_since_fb, int amt_players)

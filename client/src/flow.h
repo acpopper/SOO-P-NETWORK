@@ -10,3 +10,4 @@ void select_action_cazador(int server_socket);
 void select_action_medico(int server_socket);
 void select_action_hacker(int server_socket);
 void choose_monster(int server_socket);
+void display_players(int server_socket);

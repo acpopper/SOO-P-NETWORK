@@ -95,5 +95,19 @@ void select_action_hacker(int server_socket){
   free(response);
 }
 
+void display_players(int server_socket){
+  printf("Selecciona sobre quien usar la habilidad:\n");
+  char * message = client_receive_payload(server_socket);
+  printf("================= LISTA DE JUGADORES =================\n");
+  printf("%s", message);
+  printf("======================================================\n");
+  free(message);
+  char* response = get_input();
+  // al parecer da lo mismo el code del send que sigue...
+  // se recibe solo payload y parece funcionar
+  client_send_message(server_socket, 70, response);
+  free(response);
+}
+
 
 
