@@ -12,7 +12,7 @@ void welcome_client(int client_socket){
 void add_name(entity** players, int client_socket){
     char* name = server_receive_payload(client_socket);
     for(int i =0; i<4; i++){
-        if(players[i]!=0){
+        if(players[i]!=NULL){
             if(players[i]->jugador->client_socket==client_socket){
                 name_entity_player(players[i], name);
             }
