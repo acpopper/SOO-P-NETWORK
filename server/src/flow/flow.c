@@ -54,7 +54,7 @@ void notify_leader(int leader, entity** players, int new_player){
     server_send_message(leader,79,msg);
     // Notificar Sala llena
     if(players_num==4){
-        server_send_message(leader,79,"Sala llena, Inicie Juego\n");
+        // server_send_message(leader,79,"Sala llena, Inicie Juego\n");
     }
     // Notificar opcion de partir juego
     if(leader == new_player){

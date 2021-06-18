@@ -27,7 +27,10 @@ void * handle_connection(void *p_client_socket){
   
   while(1){
     int msg_code = server_receive_id(client_socket);
+    printf("code %i\n", msg_code);
     if(msg_code == 0){
+      printf("client skt %i\n", client_socket);
+      sleep(1);
       add_name(entities,client_socket);
     }
     else if(msg_code == 1){
@@ -37,8 +40,11 @@ void * handle_connection(void *p_client_socket){
       // char *msg = server_receive_payload(client_socket);
       // int against = atoi(msg);
       // free(msg);
+      start_game=true;
       // start_game=game(entities, client_socket, actual_connections);
       if(start_game){
+        server_send_message(client_socket, 3, "");
+        
         // turno(entities, client_socket);
       }
       //comenzar juego, solo lo puede enviar si es el lider
@@ -97,6 +103,7 @@ int main(int argc, char *argv[]){
       // int *pclient = malloc(sizeof(int));
       // *pclient = client_socket;
       int pclient = client_socket;
+
       pthread_create(&server_instance, NULL, handle_connection, &pclient);
     } else{
       int client_socket = accept_new_connection(server_socket);
