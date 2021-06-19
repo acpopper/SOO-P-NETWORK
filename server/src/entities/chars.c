@@ -110,8 +110,8 @@ void type_entity_player(entity* player, int type){
 
 entity* new_monster(int type){
     entity* new_entity = malloc(sizeof(entity));
-    new_entity->monstruo = malloc(sizeof(entity));
-    new_entity->jugador = malloc(sizeof(entity));
+    new_entity->monstruo = malloc(sizeof(monster));
+    new_entity->jugador = malloc(sizeof(player));
     new_entity->is_player = false;
     if (type==1){
         new_entity->vida_max = 10000;
