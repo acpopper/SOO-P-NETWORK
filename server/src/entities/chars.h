@@ -40,20 +40,22 @@ typedef struct Entity
 } entity;
 
 typedef struct Game {
-    int amt_of_players;
+    int* amt_of_players;
     entity** players;
     entity* monster;
     int* rounds;
     int* rounds_rm;
-    bool battle_going;
+    bool* battle_going;
     bool game_going;
     char* game_state;
 } juego;
 
 juego* init_game(entity** players, entity* monster, int amt_of_players);
-void acualize_game_state(juego* juego);
-bool pasar_turno(entity** players, entity* target, int* rondas, int* rondas_since_fb, int amt_players, juego* game);
+void start_battle(juego* game);
+void actualize_game_state(juego* juego);
+bool pasar_turno(juego* game);
 void actualize_entity(entity* player);
+void remove_player(int client_socket, juego* game);
 void free_game(juego* game);
 
 
@@ -62,10 +64,10 @@ entity* new_entity(bool party_leader, int client_socket, bool is_player, char *n
 void name_entity_player(entity* player, char* name);
 void type_entity_player(entity* player, int type);
 
-bool use_ability(entity* user, entity* target, char* ability, entity ** players, int amt_of_players, juego* game);
-bool use_ability_cazador(entity* user, entity* target, char* ability, entity** players, int amt_of_players, juego* game);
-bool use_ability_medico(entity* user, entity* target, char* ability, entity** players, int amt_of_players, juego* game);
-bool use_ability_hacker(entity* user, entity* target, char* ability, juego* game);
+bool use_ability(entity* user, entity* target, int ability, entity ** players, int amt_of_players, juego* game);
+bool use_ability_cazador(entity* user, entity* target, int ability, entity** players, int amt_of_players, juego* game);
+bool use_ability_medico(entity* user, entity* target, int ability, entity** players, int amt_of_players, juego* game);
+bool use_ability_hacker(entity* user, entity* target, int ability, juego* game);
 bool entity_use_ability(entity *user, entity** players, int amt_of_players, int* rounds, juego* game);
 void dmg_entity(entity* attacker, entity* target, int dmg);
 void heal_entity(entity* user, entity* target, int amt);
