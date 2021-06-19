@@ -97,7 +97,7 @@ int main(int argc, char *argv[]){
   free(entities);
   return 0;
 
-  // entity** players = malloc(sizeof(player*) * 4);
+  // entity** players = calloc(4, sizeof(player*));
   // int player_amt = 3;
   // entity* p1 = new_entity(false, 1, true, "juan", "");
   // entity* p2 = new_entity(false, 2, true, "fco", "");
@@ -111,20 +111,10 @@ int main(int argc, char *argv[]){
   // players[1] = p2;
   // players[2] = p3;
   // // players[3] = p4;
-  // entity* m1 = new_monster(2);
+  // entity* m1 = new_monster(3);
   // juego* juego = init_game(players, m1, player_amt);
 
-  // printf("%s", juego->game_state);
-
-  // use_ability(juego->players[0], juego->monster, juego->players[0]->jugador->ability1_name, players, 1, juego);
-  // use_ability(juego->players[1], juego->monster, juego->players[1]->jugador->ability3_name, players, 2, juego);
-  // use_ability(juego->players[2], juego->monster, juego->players[2]->jugador->ability3_name, players, 3, juego);
-  // entity_use_ability(juego->monster, players, player_amt, juego->rounds_rm, juego);
-
-  // pasar_turno(players, m1, juego->rounds, juego->rounds_rm, player_amt, juego);
-
-  // printf("%s", juego->game_state);
-
+  // start_battle(juego);
   // free_game(juego);
 }
 
