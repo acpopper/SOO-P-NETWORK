@@ -109,8 +109,8 @@ void turno(entity** players, int client_socket){
 }
 
 void print_situacion(int client_socket, entity** players){
-    char msg[100];
-    char info[50];
+    char msg[200];
+    char info[100];
     for(int i=0; i<5; i++){
         if (players[i]!= 0){
             if (players[i]->is_player){

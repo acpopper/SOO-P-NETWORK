@@ -23,7 +23,7 @@ void * handle_connection(void *p_client_socket){
       add_type(entities, client_socket);
     }
     else if(msg_code==2){
-      // start_game=game(entities, client_socket, actual_connections);
+      start_game=game(entities, client_socket, actual_connections);
       if (start_game){
         turno(entities, client_socket);
       }
