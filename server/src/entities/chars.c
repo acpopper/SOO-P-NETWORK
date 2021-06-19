@@ -573,7 +573,7 @@ void start_battle(juego* game)
         }
         if (*game->battle_going)
         {
-            entity_use_ability(game->monster, game->players, *game->amt_of_players, game->rounds, game);
+            entity_use_ability(game->monster, game->players, *game->amt_of_players, game->rounds_rm, game);
             *game->battle_going = pasar_turno(game);
         }
     }
@@ -583,32 +583,29 @@ void start_battle(juego* game)
 
 void remove_player(int client_socket, juego* game)
 {
-    int to_remove_index;
     for (int  i = 0; i < *game->amt_of_players; i++)
     {
         if (game->players[i]->jugador->client_socket == client_socket)
         {
             printf("%s se rindió\n", game->players[i]->jugador->nombre);
-            to_remove_index = i;
+            free(game->players[i]->jugador);
+            free(game->players[i]->monstruo);
+            free(game->players[i]);
+            game->players[i] = NULL;
         }
     }
-    if (to_remove_index == *game->amt_of_players - 1)
+    int c = 0;
+    entity** new_players = calloc(4, sizeof(entity*));
+    for (int i = 0; i < *game->amt_of_players; i++)
     {
-        free(game->players[to_remove_index]->jugador);
-        free(game->players[to_remove_index]->monstruo);
-        free(game->players[to_remove_index]); 
-        game->players[to_remove_index] = NULL;
-    } else {
-        free(game->players[to_remove_index]);
-        // aux_player = game->players[*game->amt_of_players - 1];
-        // free(game->players[*game->amt_of_players - 1]);
-        game->players[to_remove_index] = game->players[*game->amt_of_players - 1];
-        // printf("%s\n", game->players[*game->amt_of_players - 1]->jugador->nombre);
-        // free(game->players[*game->amt_of_players - 1]->jugador);
-        // free(game->players[*game->amt_of_players - 1]->monstruo);
-        // free(game->players[*game->amt_of_players - 1]);
-        // game->players[*game->amt_of_players - 1] = NULL;
+        if (game->players[i])
+        {
+            new_players[c] = game->players[i];
+            c++;
+        }
     }
+    free(game->players);
+    game->players = new_players;
     *game->amt_of_players -= 1;
     if (*game->amt_of_players == 0)
     {
