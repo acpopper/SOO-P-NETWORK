@@ -619,7 +619,7 @@ void remove_player(int client_socket, juego *game)
             to_remove_index = i;
         }
     }
-    for (int i = 0; i < *game->amt_of_players; i++)
+    if (to_remove_index == *game->amt_of_players - 1)
     {
         free(game->players[to_remove_index]->jugador);
         free(game->players[to_remove_index]->monstruo);
