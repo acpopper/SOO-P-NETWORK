@@ -322,7 +322,7 @@ bool use_ddos(entity *user, entity *target, juego *game)
 bool use_fb(entity *user, entity *target, juego *game)
 {
     printf("%s uso fb\n", user->jugador->nombre);
-    if (user->times_fb < 3)
+    if (user->times_fb < 2)
     {
         user->times_fb++;
     }
