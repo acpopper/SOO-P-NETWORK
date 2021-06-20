@@ -10,6 +10,8 @@ int max_connections = 4;
 int actual_connections = 0; //size de entities
 entity** entities;
 bool start_game = false;
+juego* GAME;
+
 
 void * handle_connection(void *p_client_socket){
   int client_socket = *((int*)p_client_socket);
@@ -23,11 +25,11 @@ void * handle_connection(void *p_client_socket){
       add_type(entities, client_socket);
     }
     else if(msg_code==2){
-      // start_game=game(entities, client_socket, actual_connections);
-      if (start_game){
-        turno(entities, client_socket);
+      start_game=game(entities, client_socket, actual_connections);
+      if(start_game){
+        GAME = init_game(entities, , actual_connections);
+        
       }
-      //comenzar juego, solo lo puede enviar si es el lider
     }
     else if(msg_code == 3){ 
       char *msg = server_receive_payload(client_socket);
@@ -36,13 +38,7 @@ void * handle_connection(void *p_client_socket){
         // Rendirse
       }
       else{
-        // Encuentra las entities y usa la funcion use_ability que modifica los valores de las entidades
-        entity* user;
-        entity* target;
-        user = select_user(client_socket, entities);
-        target = select_target(client_socket, entities, action, user->type);
-        printf("User: %s Target: %s\n", user->jugador->nombre, target->type);
-        // use_ability(user, target, user->jugador->ability1_name, entities, actual_connections);
+        // usar habilidad
       }
     }
     else if(msg_code ==-1){
@@ -61,7 +57,7 @@ int main(int argc, char *argv[]){
   char * IP = argv[2];
   int PORT = atoi(argv[4]);
   int server_socket = setup_server(IP, PORT);
-  entities = calloc(5,sizeof(entity)); //son 5 porque el ultimo es el monster
+  entities = calloc(4,sizeof(entity)); // array de jugadores
   while (1){
     if (actual_connections<max_connections && !start_game){
       printf("Esperando conexiones...\n");
