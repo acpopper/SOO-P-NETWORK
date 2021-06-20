@@ -39,7 +39,7 @@ void * handle_connection(void *p_client_socket){
       if(start_game){
         GAME = init_game(entities, monstruo, actual_connections);
         turno_pro(GAME, client_socket);
-        server_send_message(client_socket, 111, "");
+        // server_send_message(client_socket, 111, "");
       }
     }
     

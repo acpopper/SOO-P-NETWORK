@@ -41,7 +41,7 @@ entity *new_entity(bool party_leader, int client_socket, bool is_player, char *n
     entity *new_entity = malloc(sizeof(entity));
     if (is_player)
     {
-        new_entity->jugador = malloc(sizeof(entity));
+        new_entity->jugador = malloc(sizeof(player));
         new_entity->jugador->client_socket = client_socket;
         new_entity->monstruo = NULL;
         new_entity->is_player = is_player;
@@ -55,8 +55,8 @@ entity *new_entity(bool party_leader, int client_socket, bool is_player, char *n
     }
     else
     {
-        new_entity->monstruo = malloc(sizeof(entity));
-        new_entity->jugador = malloc(sizeof(entity));
+        new_entity->monstruo = malloc(sizeof(monster));
+        new_entity->jugador = malloc(sizeof(player));
         new_entity->is_player = false;
         new_entity->jugador->nombre = type;
         if (!strcmp(type, "Great JagRuz"))
@@ -619,20 +619,16 @@ void remove_player(int client_socket, juego *game)
             to_remove_index = i;
         }
     }
-    if (to_remove_index == *game->amt_of_players - 1)
+    free(game->players[to_remove_index]->jugador);
+    free(game->players[to_remove_index]->monstruo);
+    free(game->players[to_remove_index]);
+    game->players[to_remove_index] = NULL;
+    if (to_remove_index == *game->amt_of_players - 1 && to_remove_index == game->next_player)
     {
-        free(game->players[to_remove_index]->jugador);
-        free(game->players[to_remove_index]->monstruo);
-        free(game->players[to_remove_index]);
-        game->players[to_remove_index] = NULL;
         game->next_player = 0;
     }
     else
     {
-        free(game->players[to_remove_index]->jugador);
-        free(game->players[to_remove_index]->monstruo);
-        free(game->players[to_remove_index]);
-        game->players[to_remove_index] = NULL;
         for (int i = 0; i < *game->amt_of_players - 1; i++)
         {
             if (game->players[i] == NULL && game->players[i+1] != NULL)
@@ -642,15 +638,6 @@ void remove_player(int client_socket, juego *game)
             }
         }
         game->next_player = to_remove_index;
-        
-        // aux_player = game->players[*game->amt_of_players - 1];
-        // free(game->players[*game->amt_of_players - 1]);
-        // game->players[to_remove_index] = game->players[*game->amt_of_players - 1];
-        // printf("%s\n", game->players[*game->amt_of_players - 1]->jugador->nombre);
-        // free(game->players[*game->amt_of_players - 1]->jugador);
-        // free(game->players[*game->amt_of_players - 1]->monstruo);
-        // free(game->players[*game->amt_of_players - 1]);
-        // game->players[*game->amt_of_players - 1] = NULL;
     }
     *game->amt_of_players -= 1;
     if (*game->amt_of_players == 0)
