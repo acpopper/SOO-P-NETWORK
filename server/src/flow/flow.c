@@ -124,7 +124,6 @@ int find_next_player(juego *game, int client_socket) {
         if(game->players[i]->jugador->client_socket==client_socket){
             if (i==*game->amt_of_players-1)
             {
-                printf("BORDEE\n");
                 for(int j=0; j<4; j++){
                     if (game->players[j]->jugador != NULL && game->players[j]->alive == true)
                     {
@@ -133,7 +132,6 @@ int find_next_player(juego *game, int client_socket) {
                     
                 }
             } else {
-                 printf(" NO BORDEE\n");
                 for(int j=i+1; j<4; j++){
                     if (game->players[j]->jugador != NULL && game->players[j]->alive == true)
                     {

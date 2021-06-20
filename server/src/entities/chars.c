@@ -601,7 +601,7 @@ void start_battle(juego *game)
         }
         if (*game->battle_going)
         {
-            entity_use_ability(game->monster, game->players, *game->amt_of_players, game->rounds, game);
+            entity_use_ability(game->monster, game->players, *game->amt_of_players, game->rounds_rm, game);
             *game->battle_going = pasar_turno(game);
         }
     }
@@ -619,7 +619,7 @@ void remove_player(int client_socket, juego *game)
             to_remove_index = i;
         }
     }
-    if (to_remove_index == *game->amt_of_players - 1)
+    for (int i = 0; i < *game->amt_of_players; i++)
     {
         free(game->players[to_remove_index]->jugador);
         free(game->players[to_remove_index]->monstruo);
@@ -652,6 +652,8 @@ void remove_player(int client_socket, juego *game)
         // free(game->players[*game->amt_of_players - 1]);
         // game->players[*game->amt_of_players - 1] = NULL;
     }
+    free(game->players);
+    game->players = new_players;
     *game->amt_of_players -= 1;
     if (*game->amt_of_players == 0)
     {
