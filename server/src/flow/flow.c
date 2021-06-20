@@ -49,7 +49,7 @@ void notify_leader(int leader, entity** players, int new_player){
     server_send_message(leader,3,msg);
 }
 
-bool game(entity** players, int leader,int connections, int type){
+bool game(entity** players, int leader,int connections, int type, entity* monster){
     int count_players_with_name = 0;
     bool start = false;
     if(!type){
@@ -71,7 +71,7 @@ bool game(entity** players, int leader,int connections, int type){
         
             for(int i=0; i<4;i++){
                 if(players[i]!=0 && players[i]->is_player){
-                    server_send_message(players[i]->jugador->client_socket,5,players[4]->type);
+                    server_send_message(players[i]->jugador->client_socket,5, monster->type);
                 }
             }
 

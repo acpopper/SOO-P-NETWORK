@@ -12,7 +12,7 @@ entity** entities;
 bool start_game = false;
 juego* GAME;
 bool game_exists=true;
-
+entity* monstruo;
 
 void * handle_connection(void *p_client_socket){
   int client_socket = *((int*)p_client_socket);
@@ -30,10 +30,14 @@ void * handle_connection(void *p_client_socket){
       char *msg = server_receive_payload(client_socket);
       int type = atoi(msg);
       free(msg);
-      entity* monstruo = new_monster(type);
-      start_game=game(entities, client_socket, actual_connections, type);
+      
+      if(type){
+        monstruo = new_monster(type);
+      }
+      start_game=game(entities, client_socket, actual_connections, type, monstruo);
       if(start_game){
         GAME = init_game(entities, monstruo, actual_connections);
+        server_send_message(client_socket, 111, "");
       }
     }
     else if(msg_code == 3){ 
@@ -44,7 +48,9 @@ void * handle_connection(void *p_client_socket){
         monster_attack(GAME);
       }
       if(*GAME->battle_going){
+        // Se pasa turno, y se manda señal al siguiente jugador en el array de que le toca
         game_exists = pasar_turno(GAME);
+        server_send_message(GAME->players[((*GAME->rounds)%actual_connections)+1], 111, "");
       }
     }
   }
