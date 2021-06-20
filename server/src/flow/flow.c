@@ -96,7 +96,7 @@ void turno_pro(juego* game, int client_socket){
     sprintf(aviso_turno, msgf, turn_player->jugador->nombre);
     notify_all(game, game->game_state);
     notify_all(game, aviso_turno);
-    // free(aviso_turno);
+    free(aviso_turno);
 
     char* aviso_acciones = malloc(sizeof(char)*250);
     char* skills = malloc(sizeof(char)*200);
