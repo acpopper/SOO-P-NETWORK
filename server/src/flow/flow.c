@@ -85,10 +85,9 @@ bool game(entity** players, int leader,int connections, int type, entity* monste
     return start;
 }
 
-bool turno_pro(juego* game, int client_socket){
+void turno_pro(juego* game, int client_socket){
     actualize_game_state(game);
 
-    entity* target;
     entity* turn_player;
     turn_player = encontrar_jugador(game->players, client_socket);
     
@@ -109,39 +108,6 @@ bool turno_pro(juego* game, int client_socket){
     server_send_message(client_socket, 69, aviso_acciones);
     free(aviso_acciones);
     free(skills);
-    
-    char *msg = server_receive_payload(client_socket);
-    int action = atoi(msg);
-    free(msg);
-
-    if (action == 1 && (!strcmp(turn_player->type, "Médico") || !strcmp(turn_player->type, "Hacker")))
-    {   
-        char* aviso_target = "Selecciona al jugador:\n";
-        
-        char* target_option = malloc(sizeof(char)*30);
-        for (int i = 0; i < *game->amt_of_players; i++)
-        {   
-            sprintf(target_option, "(%d) %s\n", i + 1, game->players[i]->jugador->nombre);
-            strcat(aviso_target, target_option);
-        }
-        server_send_message(client_socket, 33, aviso_target);
-        free(target_option);
-
-        char *msg = server_receive_payload(client_socket);
-        int selected_player = atoi(msg);
-        free(msg);
-
-        target = game->players[selected_player - 1];
-    } else {
-        target = game->monster;
-    }
-    
-    if (action == 0)
-    {
-        remove_player(client_socket, game);
-    } else {
-        use_ability(turn_player, target, action, game->players, *game->amt_of_players, game);
-    }
 }
 
 entity* encontrar_jugador(entity** entities, int client_socket){
@@ -155,7 +121,7 @@ entity* encontrar_jugador(entity** entities, int client_socket){
 
 void notify_all(juego* game, char* mensaje){
     int skt;
-    for(int i=0; i<game->amt_of_players; i++){
+    for(int i=0; i<*game->amt_of_players; i++){
         skt = game->players[i]->jugador->client_socket;
         server_send_message(skt, 101, mensaje);
     }
@@ -163,6 +129,48 @@ void notify_all(juego* game, char* mensaje){
 
 void monster_attack(juego* game){
     entity_use_ability(game->monster, game->players, *game->amt_of_players, game->rounds, game);
+}
+
+void action_selection(juego* game, int client_socket){
+    entity* target;
+    entity* turn_player;
+    turn_player = encontrar_jugador(game->players, client_socket);
+
+    char *msg = server_receive_payload(client_socket);
+    int action = atoi(msg);
+    free(msg);
+    // printf("action %i\n", action);
+    
+    if (action == 1 && (!strcmp(turn_player->type, "Médico") || !strcmp(turn_player->type, "Hacker")))
+    {   
+        char* aviso_target = "Selecciona al jugador:\n";
+        
+        char* target_option = malloc(sizeof(char)*30);
+        for (int i = 0; i < *game->amt_of_players; i++)
+        {   
+            sprintf(target_option, "(%d) %s\n", i + 1, game->players[i]->jugador->nombre);
+            strcat(aviso_target, target_option);
+        }
+        printf("SEND 33\n");
+        server_send_message(client_socket, 33, aviso_target);
+        free(target_option);
+
+        char *msg = server_receive_payload(client_socket);
+        int selected_player = atoi(msg);
+        free(msg);
+
+        target = game->players[selected_player - 1];
+    } else {
+        target = game->monster;
+        // printf("MONSTER %s\n", target->type);
+    }
+    
+    if (action == 0)
+    {
+        remove_player(client_socket, game);
+    } else {
+        use_ability(turn_player, target, action, game->players, *game->amt_of_players, game);
+    }
 }
 
 // void pasar_turno(entity** players, entity* target, int* rondas, int* rondas_since_fb, int amt_players)

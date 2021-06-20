@@ -19,10 +19,12 @@ void * handle_connection(void *p_client_socket){
   welcome_client(client_socket);
   while(game_exists){
     int msg_code = server_receive_id(client_socket);
+    printf("code %i skt %i\n", msg_code, client_socket);
     if(msg_code == 0){
       add_name(entities,client_socket);
     }
     else if(msg_code == 1){
+      printf("Add type\n");
       add_type(entities, client_socket);
     }
     else if(msg_code==2){
@@ -40,11 +42,29 @@ void * handle_connection(void *p_client_socket){
         server_send_message(client_socket, 111, "");
       }
     }
-    // al final, una vez iniciada la partida, se "loopea" esta parte (msgcode 3)
+    
     else if(msg_code == 3){ 
       // toca el turno de client socket
-      turno_pro(GAME, client_socket);
-      // si es el ultimo jugador, le toca atacar al monstruo
+      if(*GAME->battle_going){
+        turno_pro(GAME, client_socket);
+      }
+      else{
+        notify_all(GAME, "Juego terminado. Gracias por jugar!\n");
+        while (1)
+        {
+          printf("Juego terminado.\n");
+          sleep(2);
+        }
+        // start_game=false;
+        // actual_connections=0;
+        // for(int i=0; i<4; i++){
+        //   close(entities[i]->jugador->client_socket);
+        // }
+        // free_game(GAME);
+      }
+    }
+    else if(msg_code == 77){
+      action_selection(GAME, client_socket);
       if(*GAME->battle_going && *(GAME->rounds)%actual_connections==0){
         monster_attack(GAME);
       }
@@ -52,17 +72,10 @@ void * handle_connection(void *p_client_socket){
         // Se pasa turno, y se manda señal al siguiente jugador en el array de que le toca
         int sig_turno = ((*GAME->rounds)%actual_connections);
         game_exists = pasar_turno(GAME);
+        // printf("Siguiente turno %i\n", sig_turno);
+        
         server_send_message(GAME->players[sig_turno]->jugador->client_socket, 111, "");
-      }
-      else{
-        printf("Juego terminado.\n");
-        notify_all(GAME, "Juego terminado. Gracias por jugar!\n");
-        start_game=false;
-        actual_connections=0;
-        for(int i=0; i<4; i++){
-          close(entities[i]->jugador->client_socket);
-        }
-        free_game(GAME);
+        printf("sig turno = %i\n", sig_turno);
       }
     }
   }

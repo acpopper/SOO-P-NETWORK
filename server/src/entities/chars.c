@@ -186,8 +186,8 @@ bool use_ability_cazador(entity* user, entity *target, int ability, entity** ent
 }
 
 bool use_estocada(entity* user, entity* target, juego* game)
-{
-    printf("%s uso esotcada\n", user->jugador->nombre);
+{   
+    printf("%s uso estocada\n", user->jugador->nombre);
     dmg_entity(user, target, dmg_estocada_cazador);
     if (target->alive)
     {
