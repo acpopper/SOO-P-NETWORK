@@ -63,7 +63,7 @@ void start_game(int server_socket){
   //crear una funcion que se llame cada vez que sea el turno del jugador
 }
 
-void game_end(int server_socket){
+void notification(int server_socket){
   char * message = client_receive_payload(server_socket);
   printf("%s", message);
   free(message);

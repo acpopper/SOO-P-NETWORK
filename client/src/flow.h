@@ -5,7 +5,7 @@ char * get_input();
 void notification_leader(int server_socket);
 void catch_error_start_game(int server_socker);
 void start_game(int server_socket);
-void game_end(int server_socket);
+void notification(int server_socket);
 void print_situacion(int server_socket);
 void select_action(int server_socket);
 void select_action_cazador(int server_socket);

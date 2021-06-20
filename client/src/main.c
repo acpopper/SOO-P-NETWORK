@@ -53,7 +53,7 @@ int main (int argc, char *argv[]){
         display_players(server_socket);
       }
       else if(msg_code==95){
-        game_end(server_socket);
+        notification(server_socket);
       }
       else if(msg_code==99){
         printf("Te haz rendido\n");

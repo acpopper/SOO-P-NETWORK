@@ -91,11 +91,11 @@ void turno_pro(juego* game, int client_socket){
     entity* turn_player;
     turn_player = encontrar_jugador(game->players, client_socket);
     
-    // char* msgf = "TURNO DE: %s\n";
-    // char* aviso_turno = malloc(sizeof(char)*50);
-    // sprintf(aviso_turno, msgf, turn_player->jugador->nombre);
-    // notify_all(game, game->game_state);
-    // notify_all(game, aviso_turno);
+    char* msgf = "TURNO DE: %s\n";
+    char* aviso_turno = malloc(sizeof(char)*50);
+    sprintf(aviso_turno, msgf, turn_player->jugador->nombre);
+    notify_all(game, game->game_state);
+    notify_all(game, aviso_turno);
     // free(aviso_turno);
 
     char* aviso_acciones = malloc(sizeof(char)*250);
