@@ -49,11 +49,8 @@ void notify_leader(int leader, entity** players, int new_player){
     server_send_message(leader,3,msg);
 }
 
-bool game(entity** players, int leader,int connections){
+bool game(entity** players, int leader,int connections, int type){
     int count_players_with_name = 0;
-    char *msg = server_receive_payload(leader);
-    int type = atoi(msg);
-    free(msg);
     bool start = false;
     if(!type){
         if(connections == 4){
@@ -71,7 +68,6 @@ bool game(entity** players, int leader,int connections){
         }
         if(connections==count_players_with_name){
             start = true;
-            players[4] = new_monster(type);
         
             for(int i=0; i<4;i++){
                 if(players[i]!=0 && players[i]->is_player){
@@ -196,8 +192,8 @@ bool turno_pro(juego* game, int client_socket){
     notify_all(game, aviso_turno);
     free(aviso_turno);
 
-    char* aviso_acciones = malloc(sizeof(char)*500);
-    char* skills = malloc(sizeof(char)*500);
+    char* aviso_acciones = malloc(sizeof(char)*250);
+    char* skills = malloc(sizeof(char)*200);
     sprintf(aviso_acciones, "%s es tu turno, ¿Qué quieres hacer?:\n", turn_player->jugador->nombre);
     sprintf(skills, "(0) rendirse!\n(1) %s\n(2) %s\n(3) %s\n", turn_player->jugador->ability1_name,
     turn_player->jugador->ability2_name, turn_player->jugador->ability3_name);
@@ -238,11 +234,6 @@ bool turno_pro(juego* game, int client_socket){
         remove_player(client_socket, game);
     } else {
         use_ability(turn_player, target, action, game->players, *game->amt_of_players, game);
-    }
-    // separar esto y usarlo al final de los turnos
-    if (*game->battle_going)
-    {
-        *game->battle_going = pasar_turno(game);
     }
 }
 

@@ -11,12 +11,13 @@ int actual_connections = 0; //size de entities
 entity** entities;
 bool start_game = false;
 juego* GAME;
+bool game_exists=true;
 
 
 void * handle_connection(void *p_client_socket){
   int client_socket = *((int*)p_client_socket);
   welcome_client(client_socket);
-  while(1){
+  while(game_exists){
     int msg_code = server_receive_id(client_socket);
     if(msg_code == 0){
       add_name(entities,client_socket);
@@ -25,30 +26,27 @@ void * handle_connection(void *p_client_socket){
       add_type(entities, client_socket);
     }
     else if(msg_code==2){
-      start_game=game(entities, client_socket, actual_connections);
+      // se instancia GAME, se crea el juego
+      char *msg = server_receive_payload(client_socket);
+      int type = atoi(msg);
+      free(msg);
+      entity* monstruo = new_monster(type);
+      start_game=game(entities, client_socket, actual_connections, type);
       if(start_game){
-        GAME = init_game(entities, , actual_connections);
-        
+        GAME = init_game(entities, monstruo, actual_connections);
       }
     }
     else if(msg_code == 3){ 
-      char *msg = server_receive_payload(client_socket);
-      int action = atoi(msg);
-      if (action == 0){
-        // Rendirse
+      // toca el turno de client socket
+      turno_pro(GAME, client_socket);
+      // si es el ultimo jugador, le toca atacar al monstruo
+      if(*GAME->battle_going && *(GAME->rounds)%actual_connections==(actual_connections-1)){
+        monster_attack(GAME);
       }
-      else{
-        // usar habilidad
+      if(*GAME->battle_going){
+        game_exists = pasar_turno(GAME);
       }
     }
-    else if(msg_code ==-1){
-      //cliente pide desconectarse
-      //eliminar cliente del array
-      //actualizar actual_connection ojo: que es un thread-> hacer sincronizacion
-      //hacer free del cliente
-      //cerrar socket
-      //break;
-    }  
   }
   exit(0);
 }
