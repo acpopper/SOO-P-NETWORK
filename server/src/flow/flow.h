@@ -18,4 +18,5 @@ void turno_pro(juego* game, int client_socket);
 void monster_attack(juego* game);
 void notify_all(juego* game, char* mensaje);
 entity* encontrar_jugador(entity** entities, int client_socket);
-void action_selection(juego* game, int client_socket);
+bool action_selection(juego* game, int client_socket);
+void set_target(juego* game, int client_socket);

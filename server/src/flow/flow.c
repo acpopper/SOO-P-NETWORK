@@ -131,7 +131,7 @@ void monster_attack(juego* game){
     entity_use_ability(game->monster, game->players, *game->amt_of_players, game->rounds, game);
 }
 
-void action_selection(juego* game, int client_socket){
+bool action_selection(juego* game, int client_socket){
     entity* target;
     entity* turn_player;
     turn_player = encontrar_jugador(game->players, client_socket);
@@ -140,37 +140,48 @@ void action_selection(juego* game, int client_socket){
     int action = atoi(msg);
     free(msg);
     // printf("action %i\n", action);
-    
+    bool second_step = false;
     if (action == 1 && (!strcmp(turn_player->type, "Médico") || !strcmp(turn_player->type, "Hacker")))
     {   
-        char* aviso_target = "Selecciona al jugador:\n";
-        
+        second_step = true;
+        char* aviso_target = malloc(sizeof(char)*200);
+        sprintf(aviso_target, "Selecciona al jugador:\n");
         char* target_option = malloc(sizeof(char)*30);
         for (int i = 0; i < *game->amt_of_players; i++)
         {   
             sprintf(target_option, "(%d) %s\n", i + 1, game->players[i]->jugador->nombre);
             strcat(aviso_target, target_option);
         }
-        printf("SEND 33\n");
+        
         server_send_message(client_socket, 33, aviso_target);
         free(target_option);
+        free(aviso_target);
+        return true;
 
-        char *msg = server_receive_payload(client_socket);
-        int selected_player = atoi(msg);
-        free(msg);
-
-        target = game->players[selected_player - 1];
-    } else {
+    } else{
         target = game->monster;
-        // printf("MONSTER %s\n", target->type);
     }
     
     if (action == 0)
-    {
+    {   server_send_message(client_socket, 99, "");
         remove_player(client_socket, game);
-    } else {
+    } else if(!second_step){
         use_ability(turn_player, target, action, game->players, *game->amt_of_players, game);
     }
+    return false;
+}
+
+void set_target(juego* game, int client_socket){
+    entity* target;
+    entity* turn_player;
+    turn_player = encontrar_jugador(game->players, client_socket);
+
+    char *msg = server_receive_payload(client_socket);
+    int selected_player = atoi(msg);
+    free(msg);
+
+    target = game->players[selected_player - 1];
+    use_ability(turn_player, target, 1, game->players, *game->amt_of_players, game);
 }
 
 // void pasar_turno(entity** players, entity* target, int* rondas, int* rondas_since_fb, int amt_players)
