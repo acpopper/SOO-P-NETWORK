@@ -35,10 +35,10 @@ int rm_multiplier_ruiz = 100;
 // @param [bool] party_leader: indica si es o no party leader
 // @param [char*] type: clase del jugador o tipo de monstruo, debe ser como en el enunciado
 // @param [bool] is_player: indica si es un juigador o monstruo
-// @return [entity*] retorna el puntero al nuevo entity 
-entity* new_entity(bool party_leader, int client_socket, bool is_player, char *name, char* type)
+// @return [entity*] retorna el puntero al nuevo entity
+entity *new_entity(bool party_leader, int client_socket, bool is_player, char *name, char *type)
 {
-    entity* new_entity = malloc(sizeof(entity));
+    entity *new_entity = malloc(sizeof(entity));
     if (is_player)
     {
         new_entity->jugador = malloc(sizeof(entity));
@@ -49,9 +49,9 @@ entity* new_entity(bool party_leader, int client_socket, bool is_player, char *n
         new_entity->jugador->turns_intoxicated = 0;
         new_entity->jugador->party_leader = party_leader;
         new_entity->jugador->last_used_distraer = false;
-        
-        new_entity->jugador->nombre=name;
-        new_entity->type= type;
+
+        new_entity->jugador->nombre = name;
+        new_entity->type = type;
     }
     else
     {
@@ -59,15 +59,21 @@ entity* new_entity(bool party_leader, int client_socket, bool is_player, char *n
         new_entity->jugador = malloc(sizeof(entity));
         new_entity->is_player = false;
         new_entity->jugador->nombre = type;
-        if (!strcmp(type, "Great JagRuz")){
+        if (!strcmp(type, "Great JagRuz"))
+        {
             new_entity->vida_max = 10000;
-            new_entity->type = type;} 
-        else if (!strcmp(type, "Ruzalos")){
+            new_entity->type = type;
+        }
+        else if (!strcmp(type, "Ruzalos"))
+        {
             new_entity->vida_max = 20000;
-            new_entity->type = type;} 
-        else if (!strcmp(type, "Ruiz, el Gemelo Malvado del Profesor Ruz")){
+            new_entity->type = type;
+        }
+        else if (!strcmp(type, "Ruiz, el Gemelo Malvado del Profesor Ruz"))
+        {
             new_entity->vida_max = 25000;
-            new_entity->type = type;}
+            new_entity->type = type;
+        }
         new_entity->alive = true;
         new_entity->monstruo->used_salto = false;
     }
@@ -81,24 +87,31 @@ entity* new_entity(bool party_leader, int client_socket, bool is_player, char *n
     return new_entity;
 }
 //funcion para agregar el nombre al jugador
-void name_entity_player(entity* player, char* name){
+void name_entity_player(entity *player, char *name)
+{
     player->jugador->nombre = name;
 }
 //funcion para agregar el type al jugador
-void type_entity_player(entity* player, int type){
-    if (type==1) {
+void type_entity_player(entity *player, int type)
+{
+    if (type == 1)
+    {
         player->vida_max = 5000;
         player->type = "Cazador";
         player->jugador->ability1_name = "Estocada";
         player->jugador->ability2_name = "Corte Cruzado";
         player->jugador->ability3_name = "Distraer";
-    } else if (type==2) {
+    }
+    else if (type == 2)
+    {
         player->vida_max = 3000;
         player->type = "Médico";
         player->jugador->ability1_name = "Curar";
         player->jugador->ability2_name = "Destello Regenerador";
         player->jugador->ability3_name = "Descarga Vital";
-    } else if (type==3){
+    }
+    else if (type == 3)
+    {
         player->vida_max = 2500;
         player->type = "Hacker";
         player->jugador->ability1_name = "Inyección SQL";
@@ -108,23 +121,27 @@ void type_entity_player(entity* player, int type){
     player->vida = player->vida_max;
 }
 
-entity* new_monster(int type){
-    entity* new_entity = malloc(sizeof(entity));
+entity *new_monster(int type)
+{
+    entity *new_entity = malloc(sizeof(entity));
     new_entity->monstruo = malloc(sizeof(entity));
     new_entity->jugador = malloc(sizeof(entity));
     new_entity->is_player = false;
-    if (type==1){
+    if (type == 1)
+    {
         new_entity->vida_max = 10000;
-        new_entity->type ="Great JagRuz";
+        new_entity->type = "Great JagRuz";
         new_entity->jugador->nombre = "Great JagRuz";
     }
-       
-    else if (type== 2){
+
+    else if (type == 2)
+    {
         new_entity->vida_max = 20000;
         new_entity->type = "Ruzalos";
         new_entity->jugador->nombre = "Ruzalos";
-    } 
-    else if (type==3){
+    }
+    else if (type == 3)
+    {
         new_entity->vida_max = 25000;
         new_entity->type = "Ruiz, el Gemelo Malvado del Profesor Ruz";
         new_entity->jugador->nombre = "Ruiz, el Gemelo Malvado del Profesor Ruz";
@@ -147,10 +164,10 @@ entity* new_monster(int type){
 // @param [entity**] entitys: array de entitys que estan jugando
 // @param [int] amt_of_entitys: número de jugadores activos
 // @return [bool] true si la habilidad se uso, false si la habilidad fallo
-bool use_ability(entity* user, entity* target, int ability, entity** entitys, int amt_of_entitys, juego* game)
+bool use_ability(entity *user, entity *target, int ability, entity **entitys, int amt_of_entitys, juego *game)
 {
     if (user->alive && target->alive)
-    {    
+    {
         if (!strcmp(user->type, "Cazador"))
         {
             return use_ability_cazador(user, target, ability, entitys, amt_of_entitys, game);
@@ -168,12 +185,12 @@ bool use_ability(entity* user, entity* target, int ability, entity** entitys, in
 }
 
 // Cazador
-bool use_ability_cazador(entity* user, entity *target, int ability, entity** entitys, int amt_of_entitys, juego* game)
+bool use_ability_cazador(entity *user, entity *target, int ability, entity **entitys, int amt_of_entitys, juego *game)
 {
     if (ability == 1) // estocada
     {
         return use_estocada(user, target, game);
-    } 
+    }
     else if (ability == 2) // cotre cruzado
     {
         return use_corte_cruzado(user, target, game);
@@ -185,8 +202,8 @@ bool use_ability_cazador(entity* user, entity *target, int ability, entity** ent
     return false;
 }
 
-bool use_estocada(entity* user, entity* target, juego* game)
-{   
+bool use_estocada(entity *user, entity *target, juego *game)
+{
     printf("%s uso estocada\n", user->jugador->nombre);
     dmg_entity(user, target, dmg_estocada_cazador);
     if (target->alive)
@@ -201,7 +218,7 @@ bool use_estocada(entity* user, entity* target, juego* game)
     return true;
 }
 
-bool use_corte_cruzado(entity* user, entity* target, juego* game)
+bool use_corte_cruzado(entity *user, entity *target, juego *game)
 {
     printf("%s uso cc\n", user->jugador->nombre);
     dmg_entity(user, target, dmg_cc_cazador);
@@ -209,7 +226,7 @@ bool use_corte_cruzado(entity* user, entity* target, juego* game)
     return true;
 }
 
-bool use_distraer(entity **entitys, entity* user, int amt_of_entitys, juego* game)
+bool use_distraer(entity **entitys, entity *user, int amt_of_entitys, juego *game)
 {
     printf("%s uso distraer\n", user->jugador->nombre);
     for (int i = 0; i < amt_of_entitys; i++)
@@ -222,7 +239,7 @@ bool use_distraer(entity **entitys, entity* user, int amt_of_entitys, juego* gam
 }
 
 // Médico
-bool use_ability_medico(entity* user, entity* target, int ability, entity** entitys, int amt_of_entitys, juego* game)
+bool use_ability_medico(entity *user, entity *target, int ability, entity **entitys, int amt_of_entitys, juego *game)
 {
     if (ability == 1) // curar
     {
@@ -230,7 +247,7 @@ bool use_ability_medico(entity* user, entity* target, int ability, entity** enti
     }
     else if (ability == 2) // destello ragenerador
     {
-        return use_destello(user, target, entitys, amt_of_entitys, game);       
+        return use_destello(user, target, entitys, amt_of_entitys, game);
     }
     else if (ability == 3) // descarga vital
     {
@@ -239,8 +256,7 @@ bool use_ability_medico(entity* user, entity* target, int ability, entity** enti
     return false;
 }
 
-
-bool use_curar(entity* user, entity* target, juego* game)
+bool use_curar(entity *user, entity *target, juego *game)
 {
     printf("%s uso curar\n", user->jugador->nombre);
     heal_entity(user, target, valor_curar_medic);
@@ -248,20 +264,20 @@ bool use_curar(entity* user, entity* target, juego* game)
     return true;
 }
 
-bool use_destello(entity* user, entity* target, entity** entitys, int amt_of_entitys, juego* game)
+bool use_destello(entity *user, entity *target, entity **entitys, int amt_of_entitys, juego *game)
 {
-    srand ( time(NULL) );
+    srand(time(NULL));
     printf("%s uso destello\n", user->jugador->nombre);
     int dagno = (rand() % (min_rayo_luz_medic - max_rayo_luz_medic + 1)) + min_rayo_luz_medic;
     int target_entity_index = rand() % amt_of_entitys;
-    entity* target_entity = entitys[target_entity_index];
+    entity *target_entity = entitys[target_entity_index];
     heal_entity(user, target_entity, dagno);
     dmg_entity(user, target, dagno);
     actualize_game_state(game);
     return true;
 }
 
-bool use_vital(entity* user, entity* target, juego* game)
+bool use_vital(entity *user, entity *target, juego *game)
 {
     printf("%s uso vital\n", user->jugador->nombre);
     int dagno = 2 * (user->vida_max - user->vida);
@@ -270,7 +286,7 @@ bool use_vital(entity* user, entity* target, juego* game)
     return true;
 }
 
-bool use_ability_hacker(entity* user, entity* target, int ability, juego* game)
+bool use_ability_hacker(entity *user, entity *target, int ability, juego *game)
 {
     if (ability == 1) // inyeccion sql
     {
@@ -288,14 +304,14 @@ bool use_ability_hacker(entity* user, entity* target, int ability, juego* game)
     return false;
 }
 
-bool use_sql(entity* target, juego* game)
+bool use_sql(entity *target, juego *game)
 {
     target->dmg_modifier *= 2;
     actualize_game_state(game);
     return true;
 }
 
-bool use_ddos(entity* user, entity* target, juego* game)
+bool use_ddos(entity *user, entity *target, juego *game)
 {
     printf("%s uso ddos\n", user->jugador->nombre);
     dmg_entity(user, target, dmg_ddos_hacker);
@@ -303,7 +319,7 @@ bool use_ddos(entity* user, entity* target, juego* game)
     return true;
 }
 
-bool use_fb(entity* user, entity* target, juego* game)
+bool use_fb(entity *user, entity *target, juego *game)
 {
     printf("%s uso fb\n", user->jugador->nombre);
     if (user->times_fb < 3)
@@ -325,12 +341,12 @@ bool use_fb(entity* user, entity* target, juego* game)
 // @param [int*] rounds: puntero a la cantidad de rondas desde que se uso la habilidad sudo rm -rf
 // @param [int] amt_of_entitys: número de jugadores activos
 // @return [bool] true si la habilidad se uso, false si la habilidad fallo
-bool entity_use_ability(entity* user, entity** entitys, int amt_of_entitys, int* rounds, juego* game)
+bool entity_use_ability(entity *user, entity **entitys, int amt_of_entitys, int *rounds, juego *game)
 {
     if (user->alive)
     {
-        entity* target = NULL;
-        srand ( time(NULL) );
+        entity *target = NULL;
+        srand(time(NULL));
         for (int i = 0; i < amt_of_entitys; i++)
         {
             if (entitys[i]->jugador->last_used_distraer)
@@ -344,7 +360,7 @@ bool entity_use_ability(entity* user, entity** entitys, int amt_of_entitys, int*
             int entity_index = rand() % amt_of_entitys;
             target = entitys[entity_index];
         }
-        int prob = rand() % 100; 
+        int prob = rand() % 100;
         if (!strcmp(user->type, "Great JagRuz"))
         {
             if (prob < proba_ruzgar_jagruz) // ruzgar
@@ -384,11 +400,11 @@ bool entity_use_ability(entity* user, entity** entitys, int amt_of_entitys, int*
                     user->monstruo->used_salto = false;
                     actualize_game_state(game);
                     return true;
-                }  
+                }
             }
             else // espina venenoza
-            {   
-                printf("%s uso espina venenoza\n", user->type);         
+            {
+                printf("%s uso espina venenoza\n", user->type);
                 if (target->jugador->intoxicated)
                 {
                     dmg_entity(user, target, dmg_espina_intoxicado_ruzalos);
@@ -443,14 +459,14 @@ bool entity_use_ability(entity* user, entity** entitys, int amt_of_entitys, int*
                 actualize_game_state(game);
                 return true;
             }
-            else // 
+            else //
             {
                 printf("%s uso rm\n", user->type);
                 int dmg = *rounds * 100;
                 *rounds = 0;
                 for (int i = 0; i < amt_of_entitys; i++)
                 {
-                    dmg_entity(user, entitys[i], dmg);   
+                    dmg_entity(user, entitys[i], dmg);
                 }
                 actualize_game_state(game);
                 return true;
@@ -460,42 +476,47 @@ bool entity_use_ability(entity* user, entity** entitys, int amt_of_entitys, int*
     return false;
 }
 
-void dmg_entity(entity* attacker, entity* target, int dmg)
+void dmg_entity(entity *attacker, entity *target, int dmg)
 {
-    if (target->alive) {
+    if (target->alive)
+    {
         int real_dmg = dmg * attacker->dmg_modifier;
         if (target->is_player)
         {
-            printf("%s hizo %d de daño a %s\n",attacker->type, real_dmg, target->jugador->nombre);
+            printf("%s hizo %d de daño a %s\n", attacker->type, real_dmg, target->jugador->nombre);
         }
         else
         {
-            printf("%s hizo %d de daño a %s\n",attacker->jugador->nombre, real_dmg, target->type);
+            printf("%s hizo %d de daño a %s\n", attacker->jugador->nombre, real_dmg, target->type);
         }
-        
+
         if (target->vida > real_dmg)
         {
             target->vida -= real_dmg;
-        } 
-        else 
+        }
+        else
         {
             target->alive = false;
             target->vida = 0;
-            if(target->is_player){
+            if (target->is_player)
+            {
                 printf("%s ha muerto!\n", target->jugador->nombre);
+                server_send_message(target->jugador->client_socket, 95, "Haz muerto! Buena suerte para la proxima!\n");
             }
-            else {
+            else
+            {
                 printf("%s ha muerto!\n", target->type);
             }
         }
-    }        
+    }
 }
 
-void heal_entity(entity* user, entity* target, int amt)
+void heal_entity(entity *user, entity *target, int amt)
 {
     int real_amt = amt * user->dmg_modifier;
     int effective_cure = real_amt;
     if (target->alive)
+    // printf("PLAYER [%s] VIDA MAX [%d] VIDA ACTUAL [%d]\n", target->jugador->nombre, target->vida_max, target->vida);
     {
         if (target->vida_max - target->vida > real_amt)
         {
@@ -503,19 +524,21 @@ void heal_entity(entity* user, entity* target, int amt)
         }
         else
         {
-            target->vida = target->vida_max;
             effective_cure = target->vida_max - target->vida;
+            target->vida = target->vida_max;
         }
-        if(target->is_player)
+        if (target->is_player)
         {
             printf("curo %d de vida a %s\n", effective_cure, target->jugador->nombre);
-        } else {
+        }
+        else
+        {
             printf("curo %d de vida a %s\n", effective_cure, target->type);
         }
     }
 }
 
-void free_entity(entity* entidad)
+void free_entity(entity *entidad)
 {
     if (entidad->is_player)
     {
@@ -530,22 +553,23 @@ void free_entity(entity* entidad)
     free(entidad);
 }
 
-void start_battle(juego* game)
+void start_battle(juego *game)
 {
     actualize_game_state(game);
-    int* actions = malloc(16);
-    entity** targets = malloc(sizeof(entity*) * 4); 
+    int *actions = malloc(16);
+    entity **targets = malloc(sizeof(entity *) * 4);
     while (*game->battle_going)
     {
         printf("%s", game->game_state);
         for (int i = 0; i < *game->amt_of_players; i++)
         {
-            printf("%s es tu turno, ¿Qué quieres hacer?:\n", game->players[i]->jugador->nombre);
+            // printf("%s es tu turno, ¿Qué quieres hacer?:\n", game->players[i]->jugador->nombre);
             int action;
-            printf("(0) rendirse!\n");
-            printf("(1) %s\n", game->players[i]->jugador->ability1_name);
-            printf("(2) %s\n", game->players[i]->jugador->ability2_name);
-            printf("(3) %s\n", game->players[i]->jugador->ability3_name);
+            // printf("(0) rendirse!\n");
+            // printf("(1) %s\n", game->players[i]->jugador->ability1_name);
+            // printf("(2) %s\n", game->players[i]->jugador->ability2_name);
+            // printf("(3) %s\n", game->players[i]->jugador->ability3_name);
+            action = turno_pro(game, game->players[i]->jugador->client_socket);
             scanf("%d", &action);
             actions[i] = action;
             if (action == 1 && (!strcmp(game->players[i]->type, "Médico") || !strcmp(game->players[i]->type, "Hacker")))
@@ -558,7 +582,9 @@ void start_battle(juego* game)
                 }
                 scanf("%d", &selected_player);
                 targets[i] = game->players[selected_player - 1];
-            } else {
+            }
+            else
+            {
                 targets[i] = game->monster;
             }
         }
@@ -567,7 +593,9 @@ void start_battle(juego* game)
             if (actions[i] == 0)
             {
                 remove_player(game->players[i]->jugador->client_socket, game);
-            } else {
+            }
+            else
+            {
                 use_ability(game->players[i], targets[i], actions[i], game->players, *game->amt_of_players, game);
             }
         }
@@ -581,14 +609,13 @@ void start_battle(juego* game)
     free(targets);
 }
 
-void remove_player(int client_socket, juego* game)
+void remove_player(int client_socket, juego *game)
 {
     int to_remove_index;
-    for (int  i = 0; i < *game->amt_of_players; i++)
+    for (int i = 0; i < *game->amt_of_players; i++)
     {
         if (game->players[i]->jugador->client_socket == client_socket)
         {
-            printf("%s se rindió\n", game->players[i]->jugador->nombre);
             to_remove_index = i;
         }
     }
@@ -596,13 +623,29 @@ void remove_player(int client_socket, juego* game)
     {
         free(game->players[to_remove_index]->jugador);
         free(game->players[to_remove_index]->monstruo);
-        free(game->players[to_remove_index]); 
-        game->players[to_remove_index] = NULL;
-    } else {
         free(game->players[to_remove_index]);
+        game->players[to_remove_index] = NULL;
+        game->next_player = 0;
+    }
+    else
+    {
+        free(game->players[to_remove_index]->jugador);
+        free(game->players[to_remove_index]->monstruo);
+        free(game->players[to_remove_index]);
+        game->players[to_remove_index] = NULL;
+        for (int i = 0; i < *game->amt_of_players - 1; i++)
+        {
+            if (game->players[i] == NULL && game->players[i+1] != NULL)
+            {
+                game->players[i] = game->players[i+1];
+                game->players[i+1] = NULL;
+            }
+        }
+        game->next_player = to_remove_index;
+        
         // aux_player = game->players[*game->amt_of_players - 1];
         // free(game->players[*game->amt_of_players - 1]);
-        game->players[to_remove_index] = game->players[*game->amt_of_players - 1];
+        // game->players[to_remove_index] = game->players[*game->amt_of_players - 1];
         // printf("%s\n", game->players[*game->amt_of_players - 1]->jugador->nombre);
         // free(game->players[*game->amt_of_players - 1]->jugador);
         // free(game->players[*game->amt_of_players - 1]->monstruo);
@@ -613,17 +656,19 @@ void remove_player(int client_socket, juego* game)
     if (*game->amt_of_players == 0)
     {
         *game->battle_going = false;
-    } else {
+    }
+    else
+    {
         actualize_game_state(game);
     }
 }
 
-juego* init_game(entity** players, entity* monster, int amt_of_players)
+juego *init_game(entity **players, entity *monster, int amt_of_players)
 {
     juego *new_game = malloc(sizeof(juego));
     new_game->amt_of_players = malloc(4);
     *new_game->amt_of_players = amt_of_players;
-    new_game->battle_going = malloc(4); 
+    new_game->battle_going = malloc(4);
     *new_game->battle_going = true;
     new_game->game_going = true;
     new_game->monster = monster;
@@ -632,25 +677,34 @@ juego* init_game(entity** players, entity* monster, int amt_of_players)
     new_game->rounds_rm = malloc(sizeof(4));
     *new_game->rounds = 1;
     *new_game->rounds_rm = 1;
-    new_game->game_state = malloc(sizeof(char)*1000);
+    new_game->game_state = malloc(sizeof(char) * 1000);
     actualize_game_state(new_game);
+    new_game->next_player = 0;
     return new_game;
 }
 
-void actualize_game_state(juego* juego)
+void actualize_game_state(juego *juego)
 {
-    char* life_displayer = "%s [%s]:  %d/%d\n";
-    char* rondas = "RONDA: %d\n";
+
+    char *life_displayer = "%s [%s]:  %d/%d\n";
+    char *rondas = "RONDA: %d\n";
     char rounds[30];
     sprintf(rounds, rondas, *juego->rounds);
-    
+
     strcpy(juego->game_state, "===================== SITUACIÓN ACTUAL =====================\n");
     strcat(juego->game_state, rounds);
     for (int i = 0; i < *juego->amt_of_players; i++)
     {
-        char player_status[500]; 
-        sprintf(player_status, life_displayer, juego->players[i]->jugador->nombre, juego->players[i]->type, juego->players[i]->vida, juego->players[i]->vida_max);
-        strcat(juego->game_state,player_status);
+        if (juego->players[i]->alive == false)
+        {
+            remove_player(juego->players[i]->jugador->client_socket, juego);
+        }
+        else
+        {
+            char player_status[500];
+            sprintf(player_status, life_displayer, juego->players[i]->jugador->nombre, juego->players[i]->type, juego->players[i]->vida, juego->players[i]->vida_max);
+            strcat(juego->game_state, player_status);
+        }
     }
     char monster_status[500];
     sprintf(monster_status, life_displayer, juego->monster->type, "monstruo", juego->monster->vida, juego->monster->vida_max);
@@ -658,10 +712,9 @@ void actualize_game_state(juego* juego)
     strcat(juego->game_state, "============================================================\n");
 }
 
-
 // Función para pasar de turno
 // @return [bool] retorna true si el combate sigue y false si el combate se acaba
-bool pasar_turno(juego* game)
+bool pasar_turno(juego *game)
 {
     *game->rounds += 1;
     *game->rounds_rm += 1;
@@ -683,9 +736,9 @@ bool pasar_turno(juego* game)
     return true;
 }
 
-void actualize_entity(entity* entidad)
+void actualize_entity(entity *entidad)
 {
-    entity* nature = malloc(sizeof(entity));
+    entity *nature = malloc(sizeof(entity));
     nature->type = "Tiempo";
     nature->jugador = malloc(sizeof(player));
     nature->jugador->nombre = "Tiempo";
@@ -700,14 +753,14 @@ void actualize_entity(entity* entidad)
             {
                 entidad->jugador->intoxicated = false;
                 entidad->dmg_per_turn -= dmg_espina_ruzalos;
-            } 
+            }
         }
     }
     free(nature->jugador);
     free(nature);
 }
 
-void free_game(juego* game)
+void free_game(juego *game)
 {
     free(game->rounds);
     free(game->rounds_rm);

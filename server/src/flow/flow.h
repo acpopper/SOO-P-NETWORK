@@ -20,3 +20,4 @@ void notify_all(juego* game, char* mensaje);
 entity* encontrar_jugador(entity** entities, int client_socket);
 bool action_selection(juego* game, int client_socket);
 void set_target(juego* game, int client_socket);
+int find_next_player(juego *game, int client_socket);
