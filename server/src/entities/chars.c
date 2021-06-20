@@ -652,8 +652,6 @@ void remove_player(int client_socket, juego *game)
         // free(game->players[*game->amt_of_players - 1]);
         // game->players[*game->amt_of_players - 1] = NULL;
     }
-    free(game->players);
-    game->players = new_players;
     *game->amt_of_players -= 1;
     if (*game->amt_of_players == 0)
     {
