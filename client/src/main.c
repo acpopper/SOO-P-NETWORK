@@ -42,14 +42,28 @@ int main (int argc, char *argv[]){
       }
       else if(msg_code==9){
         select_action_hacker(server_socket);
+      }
+      else if(msg_code==15){
+        select_target(server_socket);
+      }
+      else if(msg_code==69){
+        select_action(server_socket);
+      }
+      else if(msg_code==78){
+        display_players(server_socket);
+      }
+      else if(msg_code==95){
+        notification(server_socket);
+      }
+      else if(msg_code==99){
+        printf("Te haz rendido\n");
+        // client_send_message(server_socket, 99, "");
       }      
       else if(msg_code == 100){
         printf("El número máximo de jugadores ya esta completo\n");
         connected =0;
       }
-      else if(msg_code==78){
-        display_players(server_socket);
-      }
+
       
   }
   close(server_socket);

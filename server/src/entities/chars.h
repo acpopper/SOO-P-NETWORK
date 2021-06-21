@@ -45,6 +45,7 @@ typedef struct Game {
     entity* monster;
     int* rounds;
     int* rounds_rm;
+    int next_player;
     bool* battle_going;
     bool game_going;
     char* game_state;
